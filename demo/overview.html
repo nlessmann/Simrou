@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Simrou Testsuite</title>
+        
+        <script type="text/javascript" src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
+        <script type="text/javascript" src="../build/simrou.min.js"></script>
+        
+        <script type="text/javascript">
+        $(function() {
+            // Create a new Simrou instance
+            var router = new Simrou();
+            
+            // - - - - -
+            
+            // Register a route that matches all articles
+            var articles = router.registerRoute('/articles/:id');
+            
+            // Attach an action for GET requests to that route
+            articles.attachAction('get', function(event, method, id) {
+                console.log('Reading article #' + id + '...sweet!');
+            });
+            
+            // Attach an action for PUT requests using the shortcut function put()
+            articles.put(function() {
+                console.log('Article - put!');
+            });
+            
+            // - - - - -
+            
+            // Register a second route (for the homepage) and specify an action handler
+            // for GET requests right away by using the optional second parameter:
+            router.registerRoute('/homepage', function(e, method) {
+                console.log('!!! => ' + method);
+            });
+            
+            // - - - - -
+            
+            // Register a route with a wildcard in it:
+            router.registerRoute('/portfolio/:section/*').get(function(e, method, section, path) {
+                console.log(section + ' ### ' + path);
+            });
+            
+            
+            // - - - - -
+            
+            // Start the routing with the homepage as a default route...
+            router.start('/homepage');
+            
+            // - - - - -
+            
+            $('#test').click(function() {
+                // Navigate to an article
+                router.navigate('/articles/172');
+                return false;
+            });
+        });
+        </script>
+    </head>
+    
+    <body>
+        
+        <ul>
+            <li><a href="#/articles/172">Article 172</a></li>
+            <li><a href="#/portfolio/webdesign/page/3">Portfolio - Webdesign</a></li>
+            <li><a href="#/homepage">Back to the homepage</a></li>
+            <li><a href="#/homepage" id="test">Article 172 via navigate()</a></li>
+        </ul>
+        
+        <form action="/articles/172" method="put">
+            <button type="submit">Send form (route for target exists)</button>
+        </form>
+        
+        <form action="/test" method="get">
+            <button type="submit">Send form (no route matches the target)</button>
+        </form>
+        
+    </body>
+</html>
