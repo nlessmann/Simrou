@@ -19,14 +19,14 @@ Sample usage
     var editRoute = router.registerRoute('/article/:id/edit');
     
     // Bind an action handler to that route
-    editRoute.get(function() {
-	    showEditForm();
+    editRoute.get(function(eventObject, method, id) {
+	    showEditForm(id);
     });
     
     // HTML Forms are getting watched, so we can bind an action handler
     // to POST requests to that same route
-    editRoute.post(function() {
-	    saveChanges();
+    editRoute.post(function(eventObject, method, id) {
+	    saveChanges(id);
     });
     
     // Get the router running...
@@ -37,7 +37,10 @@ Sample usage
 });
 </code></pre>
 
-You can as well add more than one route or action handlers at a time:
+Advanced usage
+--------------
+
+You can as well add more than one route or action handler at a time:
 
 <pre><code>$(function() {
     var router = new Simrou({
@@ -52,9 +55,26 @@ You can as well add more than one route or action handlers at a time:
         '/homepage': actionHandler5
     });
     
-    router.start('/homepage');
+    router.start('/homepage');   // ...handing over a default route!
 });
 </code></pre>
+
+In your routes, you can use two different types of wildcards: **Parameters** and **Splats** (this is just the same as in Backbone.js).
+
+* Parameters are introduced by a colon and end at the next slash, e.g. "/test/:name" matches /test/mike aswell as /test/joe but not /test/joe/something
+* Splats start with an asterix and may optionally be followed by a name, e.g. "/test/*spl" matches /test/joe (extracting "joe") aswell as /test/joe/something/even/more (extracting "joe/something/even/more").
+
+Parameters and splats can be mixed:
+
+<code>var articleRoute = router.registerRoute('/articles/:edit/*action');</code>
+
+Any action handler attached to this route would be called with the following arguments:
+
+<code>function actionHandler(event, method, edit, action)</code>
+
+* event is an jQuery Event Object
+* method is a string like 'get' or 'post', specifing the used HTTP method
+* edit and action are the values extracted from the route
 
 Requirements &amp; License
 --------------------------
