@@ -1,4 +1,4 @@
-Simrou 1.0
+Simrou 1.1
 ==========
 
 **A very tiny hash-based JavaScript routing system**
@@ -27,13 +27,32 @@ Sample usage
     // to POST requests to that same route
     editRoute.post(function() {
 	    saveChanges();
-    }); 
+    });
     
     // Get the router running...
     router.start();
     
     // Navigate somewhere:
     router.navigate('/article/42/edit');
+});
+</code></pre>
+
+You can as well add more than one route or action handlers at a time:
+
+<pre><code>$(function() {
+    var router = new Simrou({
+        '/article/:id/edit': {
+            get: actionHandler1,
+            post: actionHandler2,
+            put: actionHandler3
+        },
+        '/downloads/*': {
+            get: actionHandler4
+        },
+        '/homepage': actionHandler5
+    });
+    
+    router.start('/homepage');
 });
 </code></pre>
 
