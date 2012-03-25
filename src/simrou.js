@@ -23,7 +23,7 @@
 
     var Simrou, Route;
     
-    var version = '1.0.0';
+    var version = '1.1.0';
     
     // Cache some static regular expressions - thanks Backbone.js!
     var escapeRegExp = /[-[\]{}()+?.,\\^$|#\s]/g,
@@ -70,6 +70,32 @@
             return self;
         };
         
+        /* Allows to bulk attach action handlers. */
+        var attachActions = function(method, actions) {
+            var list;
+            
+            if (typeof method == 'object') {
+                actions = method;
+            } else {
+                var tmp = {};
+                tmp[method] = actions;
+                actions = tmp;
+            }
+            
+            for (method in actions) {
+                list = actions[method];
+                if (!$.isArray(list)) {
+                    list = [list];
+                }
+                
+                while (list.length) {
+                    attachAction(method, list.shift());
+                }
+            }
+            
+            return self;
+        };
+        
         /* Works just like attachAction, but instead detaches the action
          * handler from the route. */
         var detachAction = function(method, action) {
@@ -92,6 +118,7 @@
         self.match = match;
         self.getRegExp = getRegExp;
         self.attachAction = attachAction;
+        self.attachActions = attachActions;
         self.detachAction = detachAction;
         
         self.get = shortcut('get');
@@ -117,7 +144,7 @@
      * Simrou allows to register routes and resolve hashes in order
      * to find and invoke a matching route.
      */
-    Simrou = function() {
+    Simrou = function(initialRoutes) {
         var self = this,
             loc = window.location,
             routes = {},
@@ -128,11 +155,26 @@
             var route = new Route(pattern);
             
             if (getAction) {
-                route.get(getAction);
+                if ($.isFunction(getAction)) {
+                    route.get(getAction);
+                } else {
+                    route.attachActions(getAction);
+                }
             }
             
             routes[ String(route.getRegExp()) ] = route;
             return route;
+        };
+        
+        /* Allows to bulk register routes. */
+        var registerRoutes = function(routes) {
+            var list = {};
+            
+            for (var pattern in routes) {
+                list[pattern] = registerRoute(pattern, routes[pattern]);
+            }
+            
+            return list;
         };
         
         /* Unregisters the specified route (Route instance or pattern). */
@@ -272,11 +314,17 @@
         // Exports
         self.version = version;
         self.registerRoute = registerRoute;
+        self.registerRoutes = registerRoutes;
         self.removeRoute = removeRoute;
         self.start = start;
         self.stop = stop;
         self.navigate = navigate;
         self.resolve = resolve;
+        
+        // Initialization
+        if (initialRoutes) {
+            registerRoutes(initialRoutes);
+        }
     };
     
     // Global exports

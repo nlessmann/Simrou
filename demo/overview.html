@@ -42,6 +42,19 @@
                 console.log(section + ' ### ' + path);
             });
             
+            // - - - - -
+            
+            // Bulk register routes and action handlers
+            router.registerRoutes({
+                '/another/route': {
+                    get: [
+                        function() { alert('1.1'); },
+                        function() { alert('1.2'); } 
+                    ],
+                    post: function() { alert('2'); }
+                },
+                '/yet/another/route': function() { alert('3'); }
+            });
             
             // - - - - -
             
