@@ -22,9 +22,9 @@
 
 ;(function($, window, undefined) {
 
-    var Simrou, Route;
-    
     var version = '1.1.2';
+    
+    var Simrou, Route;
     
     // Cache some static regular expressions - thanks Backbone.js!
     var escapeRegExp = /[-[\]{}()+?.,\\^$|#\s]/g,
@@ -347,7 +347,12 @@
         if (initialRoutes) {
             registerRoutes(initialRoutes);
         }
+        
+        return self;
     };
+    
+    // Export version as a static property
+    Simrou.version = version;
     
     // Global exports
     window.Simrou = Simrou;
