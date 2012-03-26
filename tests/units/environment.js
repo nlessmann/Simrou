@@ -16,6 +16,7 @@ test('Basic requirements', function() {
     window.location.hash = '#newHash';
     equal(window.location.hash, '#newHash', 'A trailing hash symbol gets ignored while writing to window.location.hash.');
     
+    // Reset the hash
     window.location.hash = '';
 });
 
@@ -23,5 +24,5 @@ test('jQuery', function() {
     expect(2);
     
     ok(jQuery, 'Presence');
-    equal(jQuery.fn.jquery, '1.7.1');
+    equal(jQuery.fn.jquery, '1.7.1', 'The jQuery version is 1.7.1');
 });

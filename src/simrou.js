@@ -133,11 +133,13 @@
         if (pattern instanceof RegExp) {
             expr = pattern;
         } else {
-            pattern = String(pattern).replace(escapeRegExp, '\\$&')
-                                     .replace(namedParam, '([^\/]+)')
-                                     .replace(splatParam, '(.*?)');
-            
             if (pattern) {
+                // Do some escaping and replace the parameter placeholder
+                // with the proper regular expression:
+                pattern = String(pattern).replace(escapeRegExp, '\\$&')
+                                         .replace(namedParam, '([^\/]+)')
+                                         .replace(splatParam, '(.*?)');
+                
                 expr = new RegExp('^' + pattern + '$');
             } else {
                 expr = /^.+$/;
