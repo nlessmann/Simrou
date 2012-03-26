@@ -150,6 +150,11 @@
      * to find and invoke a matching route.
      */
     Simrou = function(initialRoutes) {
+        // Prevent direct calls to this function
+        if ( !(this instanceof Simrou) ) {
+            return new Simrou(initialRoutes);
+        }
+        
         var self = this,
             loc = window.location,
             routes = {},
