@@ -81,13 +81,24 @@ Parameters and splats can be mixed:
 
 <code>var articleRoute = router.registerRoute('/articles/:edit/*action');</code>
 
-Any action handler attached to this route would be called with the following arguments:
+Any action handler attached to this route will be called with the following arguments:
 
 <code>function actionHandler(event, method, edit, action)</code>
 
 * event is a [jQuery event object](http://api.jquery.com/category/events/event-object/).
 * method is a string such as 'get' or 'post', specifing the desired HTTP method.
 * edit and action are the values extracted from the route.
+
+Action handlers can be attached via jQuery events instead of using Simrou's <code>attachAction()</code> method:
+
+<pre><code>var route = router.registerRoute('some/route');
+
+// This..
+$(route).on('simrou:get', eventHandler);
+
+// ..equals:
+route.attachAction('get', eventHandler);
+</code></pre>
 
 Requirements &amp; License
 --------------------------
