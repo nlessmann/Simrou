@@ -24,11 +24,11 @@
 
     var Simrou, Route;
     
-    var version = '1.1.1';
+    var version = '1.1.2';
     
     // Cache some static regular expressions - thanks Backbone.js!
     var escapeRegExp = /[-[\]{}()+?.,\\^$|#\s]/g,
-        namedParam    = /:\w*/g,
+        namedParam    = /:\w+/g,
         splatParam    = /\*\w*/g;
     
     /**
