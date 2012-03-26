@@ -13,7 +13,8 @@ It does not provide any other features beside the routing and is therefore very 
 Demo code
 ------------
 
-<pre><code>$(function() {
+```javascript
+$(function() {
     // Setup an instance of Simrou
     var router = new Simrou();
     
@@ -37,22 +38,27 @@ Demo code
     // Navigate somewhere:
     router.navigate('/article/42/edit');
 });
-</code></pre>
+```
 
 Links work just as expected if you prepend them with a hash symbol:
 
-<code><a href="#/article/182/edit">Edit article 182</a></code>
+```html
+<a href="#/article/182/edit">Edit article 182</a>
+```
 
 A typical url within your application would actually look like this:
 
-<code>http://your-domain.tld/some/path.ext#/article/182/edit</code>
+```
+http://your-domain.tld/some/path.ext#/article/182/edit
+```
 
 Advanced usage
 --------------
 
 You can as well add more than one route or action handler at a time:
 
-<pre><code>$(function() {
+```javascript
+$(function() {
     var router = new Simrou({
         '/article/:id/edit': {
             get: actionHandler1,
@@ -67,7 +73,7 @@ You can as well add more than one route or action handler at a time:
     
     router.start('/homepage');   // Handing over a default route to navigate to
 });
-</code></pre>
+```
 
 In your routes, you can use two different types of wildcards: **Parameters** and **Splats** (this is just the 
 same as in Backbone.js).
@@ -79,11 +85,15 @@ as "/test/joe" but not "/test/joe/something".
 
 Parameters and splats can be mixed:
 
-<code>var articleRoute = router.registerRoute('/articles/:edit/*action');</code>
+```javascript
+var articleRoute = router.registerRoute('/articles/:edit/*action');
+```
 
 Any action handler attached to this route will be called with the following arguments:
 
-<code>function actionHandler(event, method, edit, action)</code>
+```javascript
+function actionHandler(event, method, edit, action)
+```
 
 * event is a [jQuery event object](http://api.jquery.com/category/events/event-object/).
 * method is a string such as 'get' or 'post', specifing the desired HTTP method.
@@ -91,14 +101,15 @@ Any action handler attached to this route will be called with the following argu
 
 Action handlers can be attached via jQuery events instead of using Simrou's <code>attachAction()</code> method:
 
-<pre><code>var route = router.registerRoute('some/route');
+```javascript
+var route = router.registerRoute('some/route');
 
 // This..
 $(route).on('simrou:get', eventHandler);
 
 // ..equals:
 route.attachAction('get', eventHandler);
-</code></pre>
+```
 
 Requirements &amp; License
 --------------------------
