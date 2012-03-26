@@ -3,12 +3,14 @@ Simrou 1.1
 
 **A very tiny hash-based JavaScript routing system**
 
-Simrou is a small javascript framework, that allows to bind action handlers to the value of <code>window.location.hash</code>.
-This is in particular useful for the development of single-page web applications.
+Simrou is a small javascript framework, that allows to bind action handlers to <code>window.location.hash</code>.
+This is in particular useful for the development of single-page web applications. See the demo code below to get
+an idea of this works.
 
-In contrary to other frameworks with similar features, Simrou is intended to be very simple to setup and use. It does not provide any other features beside the routing and is therefore very lightweight.
+In contrary to other frameworks with similar features, Simrou is intended to be very simple to setup and use. 
+It does not provide any other features beside the routing and is therefore very lightweight.
 
-Sample usage
+Demo code
 ------------
 
 <pre><code>$(function() {
@@ -37,6 +39,14 @@ Sample usage
 });
 </code></pre>
 
+Links work just as expected if you prepend them with a hash symbol:
+
+<code><a href="#/article/182/edit">Edit article 182</a></code>
+
+A typical url within your application would actually look like this:
+
+<code>http://your-domain.tld/some/path.ext#/article/182/edit</code>
+
 Advanced usage
 --------------
 
@@ -55,14 +65,17 @@ You can as well add more than one route or action handler at a time:
         '/homepage': actionHandler5
     });
     
-    router.start('/homepage');   // ...handing over a default route!
+    router.start('/homepage');   // Handing over a default route to navigate to
 });
 </code></pre>
 
-In your routes, you can use two different types of wildcards: **Parameters** and **Splats** (this is just the same as in Backbone.js).
+In your routes, you can use two different types of wildcards: **Parameters** and **Splats** (this is just the 
+same as in Backbone.js).
 
-* Parameters are introduced by a colon and end at the next slash, e.g. "/test/:name" matches /test/mike aswell as /test/joe but not /test/joe/something
-* Splats start with an asterix and may optionally be followed by a name, e.g. "/test/*spl" matches /test/joe (extracting "joe") aswell as /test/joe/something/even/more (extracting "joe/something/even/more").
+* Parameters are introduced by a colon and end at the next slash, e.g. "/test/:name" matches "/test/mike aswell" 
+as "/test/joe" but not "/test/joe/something".
+* Splats start with an asterix and may optionally be followed by a name, e.g. "/test/*sp" matches "/test/joe" 
+(extracting "joe") aswell as "/test/joe/something/and/even/more" (extracting "joe/something/and/even/more").
 
 Parameters and splats can be mixed:
 
@@ -72,13 +85,14 @@ Any action handler attached to this route would be called with the following arg
 
 <code>function actionHandler(event, method, edit, action)</code>
 
-* event is an jQuery Event Object
-* method is a string like 'get' or 'post', specifing the used HTTP method
-* edit and action are the values extracted from the route
+* event is a [jQuery event object](http://api.jquery.com/category/events/event-object/).
+* method is a string such as 'get' or 'post', specifing the desired HTTP method.
+* edit and action are the values extracted from the route.
 
 Requirements &amp; License
 --------------------------
 
 Simrou requires jQuery 1.7 or newer and is released under the MIT license.
 
-Internally, Simrou binds itself to the <code>onHashChange</code> event. If you want to include a fallback for older browser or the IE, Simrou works out of the box with Ben Alman's [HashChange Plugin for jQuery](http://benalman.com/projects/jquery-hashchange-plugin/).
+Internally, Simrou binds itself to the <code>onHashChange</code> event. If you want to include a fallback for older 
+browser or the IE, Simrou works out of the box with Ben Alman's [HashChange Plugin for jQuery](http://benalman.com/projects/jquery-hashchange-plugin/).

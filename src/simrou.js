@@ -1,6 +1,7 @@
 /**
+ * @preserve Simrou - Simple javascript routing framework
  * Copyright (c) 2012 büro für ideen, www.buero-fuer-ideen.de
- *
+ *//*
  * Permission is hereby granted, free of charge, to any person obtaining
  * a copy of this software and associated documentation files (the "Software"),
  * to deal in the Software without restriction, including without limitation
@@ -23,11 +24,11 @@
 
     var Simrou, Route;
     
-    var version = '1.1.0';
+    var version = '1.1.1';
     
     // Cache some static regular expressions - thanks Backbone.js!
     var escapeRegExp = /[-[\]{}()+?.,\\^$|#\s]/g,
-        namedParam    = /:\w+/g,
+        namedParam    = /:\w*/g,
         splatParam    = /\*\w*/g;
     
     /**
@@ -66,15 +67,17 @@
                 method = '*';
             }
             
-            $(self).on('simrou:' + method, action);
+            $(self).on('simrou:' + method.toLowerCase(), action);
             return self;
         };
         
         /* Allows to bulk attach action handlers. */
         var attachActions = function(method, actions) {
-            var list;
             
-            if (typeof method == 'object') {
+            // Homogenize the arguments...
+            if ($.isArray(method)) {
+                actions = { '*': method };
+            } else if ($.isPlainObject(method)) {
                 actions = method;
             } else {
                 var tmp = {};
@@ -83,13 +86,13 @@
             }
             
             for (method in actions) {
-                list = actions[method];
+                var list = actions[method];
                 if (!$.isArray(list)) {
                     list = [list];
                 }
                 
-                while (list.length) {
-                    attachAction(method, list.shift());
+                for (var i = 0; i < list.length; i++) {
+                    attachAction(method, list[i]);
                 }
             }
             
@@ -104,7 +107,7 @@
                 method = '*';
             }
             
-            $(self).off('simrou:' + method, ($.isFunction(action) ? action : undefined));
+            $(self).off('simrou:' + method.toLowerCase(), ($.isFunction(action) ? action : undefined));
             return self;
         };
         
@@ -130,7 +133,9 @@
         if (pattern instanceof RegExp) {
             expr = pattern;
         } else {
-            pattern = String(pattern).replace(escapeRegExp, '\\$&').replace(namedParam, '([^\/]+)').replace(splatParam, '(.*?)');
+            pattern = String(pattern).replace(escapeRegExp, '\\$&')
+                                     .replace(namedParam, '([^\/]+)')
+                                     .replace(splatParam, '(.*?)');
             
             if (pattern) {
                 expr = new RegExp('^' + pattern + '$');
@@ -151,14 +156,14 @@
             observingHash = false;
         
         /* Allows to register a new route with this simrou instance. */
-        var registerRoute = function(pattern, getAction) {
-            var route = new Route(pattern);
+        var registerRoute = function(pattern, actionHandler) {
+            var route = (pattern instanceof Route) ? pattern : new Route(pattern);
             
-            if (getAction) {
-                if ($.isFunction(getAction)) {
-                    route.get(getAction);
+            if (actionHandler) {
+                if ($.isFunction(actionHandler)) {
+                    route.attachAction(actionHandler);
                 } else {
-                    route.attachActions(getAction);
+                    route.attachActions(actionHandler);
                 }
             }
             
@@ -168,10 +173,20 @@
         
         /* Allows to bulk register routes. */
         var registerRoutes = function(routes) {
-            var list = {};
+            var list;
             
-            for (var pattern in routes) {
-                list[pattern] = registerRoute(pattern, routes[pattern]);
+            if ($.isArray(routes)) {
+                list = [];
+                
+                for (var i = 0; i < routes.length; i++) {
+                    list.push( registerRoute(routes[i]) );
+                }
+            } else {
+                list = {};
+                
+                for (var pattern in routes) {
+                    list[pattern] = registerRoute(pattern, routes[pattern]);
+                }
             }
             
             return list;
@@ -235,7 +250,7 @@
                 
                 // If a method is specified, trigger the corresponding event
                 if (method) {
-                    $route.trigger('simrou:' + method, args);
+                    $route.trigger('simrou:' + method.toLowerCase(), args);
                 }
                 
                 match = true;
@@ -260,7 +275,7 @@
          * any form, if a matching route for the form's action is found. */
         var handleFormSubmit = function() {
             var $form = $(this),
-                method = String( $form.attr('method') ).toLowerCase() || 'get',
+                method = String( $form.attr('method') ) || 'get',
                 action = $form.attr('action');
             
             return !( resolve(action, method) );

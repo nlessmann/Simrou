@@ -19,12 +19,12 @@
             
             // Attach an action for GET requests to that route
             articles.attachAction('get', function(event, method, id) {
-                console.log('Reading article #' + id + '...sweet!');
+                alert('Reading article #' + id);
             });
             
             // Attach an action for PUT requests using the shortcut function put()
             articles.put(function() {
-                console.log('Article - put!');
+                alert('Article - via PUT!');
             });
             
             // - - - - -
@@ -32,14 +32,14 @@
             // Register a second route (for the homepage) and specify an action handler
             // for GET requests right away by using the optional second parameter:
             router.registerRoute('/homepage', function(e, method) {
-                console.log('!!! => ' + method);
+                alert('Homepage called, using HTTP method => ' + method);
             });
             
             // - - - - -
             
             // Register a route with a wildcard in it:
             router.registerRoute('/portfolio/:section/*').get(function(e, method, section, path) {
-                console.log(section + ' ### ' + path);
+                alert(section + ' ### ' + path);
             });
             
             // - - - - -
