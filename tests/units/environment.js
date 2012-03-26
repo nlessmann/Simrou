@@ -1,4 +1,4 @@
-module('core');
+module('Environment');
 
 test('Basic requirements', function() {
     expect(6);
@@ -15,6 +15,8 @@ test('Basic requirements', function() {
     
     window.location.hash = '#newHash';
     equal(window.location.hash, '#newHash', 'A trailing hash symbol gets ignored while writing to window.location.hash.');
+    
+    window.location.hash = '';
 });
 
 test('jQuery', function() {
@@ -22,20 +24,4 @@ test('jQuery', function() {
     
     ok(jQuery, 'Presence');
     equal(jQuery.fn.jquery, '1.7.1');
-});
-
-test('Simrou - Instantiation', function() {
-    var s;
-    
-    expect(4);
-    
-    // Check whether Simrou is available
-    ok(Simrou, 'Presence');
-    equal(typeof Simrou, 'function', 'Simrou is a function');
-    
-    s = new Simrou();
-    ok(s instanceof Simrou, 'Using the new operator on Simrou returns a fresh instance.');
-    
-    s = Simrou();
-    ok(s instanceof Simrou, 'Invoking Simrou() without the new operator returns a fresh instance as well.');
 });
