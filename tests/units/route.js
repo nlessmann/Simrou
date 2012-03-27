@@ -3,18 +3,14 @@ module('Route');
 /*
     equal(String(r.getRegExp()), '/^.+$/', 'Registering a new route without passing any arguments returns a wildcard route.');
     
-    var m = r.match('asf');
-    ok($.isArray(m), 'match("asf") returns an array for this route.');
-    equal(m.length, 0, '...and that array is empty.');
+    deepEqual(r.match('asf'), [], 'match("asf") returns an empty array for this route.');
     strictEqual(r.match(''), false, 'match("") === false');
     
     // Register a route and specify a static the pattern only
     r = s.registerRoute('asf');
     equal(String(r.getRegExp()), String(/^asf$/), 'Registering a route with a static pattern leads to the correct regular expression.');
     
-    var m = r.match('asf');
-    ok($.isArray(m), 'match("asf") return an array for this route.');
-    equal(m.length, 0, '...and that array is empty.');
+    deepEqual(r.match('asf'), 'match("asf") return an empty array for this route.');
     strictEqual(r.match(''), false, 'match("") === false');
     strictEqual(r.match('qwe'), false, 'match("qwe") === false');
     

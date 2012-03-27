@@ -15,7 +15,7 @@ test('Instantiation', function() {
     ok(s instanceof Simrou, 'Invoking Simrou() without the new operator returns a fresh instance as well.');
     
     // Check if the information about the current version is present
-    equal(typeof s.version, 'string', 'Simrou.version is a string.');
+    equal(typeof Simrou.version, 'string', 'Simrou.version is a string.');
 });
 
 test('Registration and removal of routes', function() {
