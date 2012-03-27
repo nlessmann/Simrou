@@ -29,7 +29,8 @@
     // Cache some static regular expressions - thanks Backbone.js!
     var escapeRegExp = /[-[\]{}()+?.,\\^$|#\s]/g,
         namedParam    = /:\w+/g,
-        splatParam    = /\*\w*/g;
+        splatParam    = /\*\w*/g,
+        firstParam    = /(:\w+)|(\*\w*)/;
     
     /**
      * Represents a single route and allows to attach (and detach)
@@ -111,6 +112,39 @@
             return self;
         };
         
+        /* Assembles a concrete url out of this route. */
+        var assemble = function(values) {
+            
+            // Can't assemble route, if it is based on a regular expression
+            if (pattern instanceof RegExp) {
+                throw 'Assembling routes that are based on a regular expression is not supported.';
+            }
+        
+            // Are the values provided in array form?
+            if (!$.isArray(values)) {
+                values = Array.prototype.slice.call(arguments);
+            }
+            
+            var str = pattern,
+                i = 0, value;
+            
+            while (firstParam.test(str)) {
+                // Get the right replacement
+                if (!values[i] && values[i] !== 0) {
+                    value = '';
+                } else if ($.isFunction(values[i])) {
+                    value = values[i].call(self);
+                } else {
+                    value = String(values[i]);
+                }
+                
+                str = str.replace(firstParam, value);
+                i++;
+            }
+            
+            return str;
+        };
+        
         var shortcut = function(method) {
             return function(action) {
                 return attachAction(method, action);
@@ -123,6 +157,7 @@
         self.attachAction = attachAction;
         self.attachActions = attachActions;
         self.detachAction = detachAction;
+        self.assemble = assemble;
         
         self.get = shortcut('get');
         self.post = shortcut('post');
@@ -136,11 +171,11 @@
             if (pattern) {
                 // Do some escaping and replace the parameter placeholder
                 // with the proper regular expression:
-                pattern = String(pattern).replace(escapeRegExp, '\\$&')
-                                         .replace(namedParam, '([^\/]+)')
-                                         .replace(splatParam, '(.*?)');
+                pattern = String(pattern);
                 
-                expr = new RegExp('^' + pattern + '$');
+                expr = new RegExp('^' + pattern.replace(escapeRegExp, '\\$&')
+                                               .replace(namedParam, '([^\/]+)')
+                                               .replace(splatParam, '(.*?)') + '$');
             } else {
                 expr = /^.+$/;
             }
