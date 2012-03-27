@@ -8,10 +8,10 @@ This is in particular useful for the development of single-page web applications
 an idea of this works.
 
 In contrary to other frameworks with similar features, Simrou is intended to be very simple to setup and use. 
-It does not provide any other features beside the routing and is therefore very lightweight.
+It does not provide any other features beside the routing - therefore it is very lightweight and flexible.
 
-Demo code
-------------
+Demo
+----
 
 ```javascript
 $(function() {
@@ -46,10 +46,10 @@ Links work just as expected if you prepend them with a hash symbol:
 <a href="#/article/182/edit">Edit article 182</a>
 ```
 
-A typical url within your application would actually look like this:
+A typical url within your application will look like this:
 
 ```
-http://your-domain.tld/some/path.ext#/article/182/edit
+http://your-domain.tld/some/path.html#/article/182/edit
 ```
 
 Advanced usage
@@ -75,13 +75,13 @@ $(function() {
 });
 ```
 
-In your routes, you can use two different types of wildcards: **Parameters** and **Splats** (this is just the 
+You can use two different types of wildcards in your routes: **Parameters** and **Splats** (this is just the 
 same as in Backbone.js).
 
-* Parameters are introduced by a colon and end at the next slash, e.g. "/test/:name" matches "/test/mike aswell" 
-as "/test/joe" but not "/test/joe/something".
-* Splats start with an asterix and may optionally be followed by a name, e.g. "/test/*sp" matches "/test/joe" 
-(extracting "joe") aswell as "/test/joe/something/and/even/more" (extracting "joe/something/and/even/more").
+* Parameters are introduced by a colon and end at the next slash.
+    > "/test/:name" matches "/test/mike as well as "/test/joe" but not "/test/joe/something".
+* Splats start with an asterix and may optionally be followed by a name.
+    > "/test/*sp" matches "/test/joe" (extracting "joe") as well as "/test/joe/something/and/even/more" (extracting "joe/something/and/even/more").
 
 Parameters and splats can be mixed:
 
