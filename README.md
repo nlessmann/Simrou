@@ -23,7 +23,7 @@ $(function() {
     
     // Bind an action handler to that route
     editRoute.get(function(eventObject, method, id) {
-	    showEditForm(id);
+        showEditForm(id);
     });
     
     // HTML Forms are getting watched, so we can bind an action handler
@@ -61,7 +61,7 @@ You can as well add more than one route or action handler at a time:
 $(function() {
     var router = new Simrou({
         '/article/:id/edit': {
-            get: actionHandler1,
+            get: [ actionHandler11, actionHandler12 ],
             post: actionHandler2,
             put: actionHandler3
         },
@@ -78,10 +78,11 @@ $(function() {
 You can use two different types of wildcards in your routes: **Parameters** and **Splats** (this is just the 
 same as in Backbone.js).
 
-* Parameters are introduced by a colon and end at the next slash.
-    > "/test/:name" matches "/test/mike as well as "/test/joe" but not "/test/joe/something".
-* Splats start with an asterix and may optionally be followed by a name.
-    > "/test/*sp" matches "/test/joe" (extracting "joe") as well as "/test/joe/something/and/even/more" (extracting "joe/something/and/even/more").
+* Parameters are introduced by a colon and end at the next slash.  
+  e.g. "/test/:name" matches "/test/mike" and "/test/joe", but not "/test/joe/something".
+
+* Splats start with an asterix and may optionally be followed by a name.  
+  e.g. "/test/*sp" matches "/test/joe" (extracting "joe") and "/test/joe/something/more" (extracting "joe/something/more").
 
 Parameters and splats can be mixed:
 
