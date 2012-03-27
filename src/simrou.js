@@ -28,9 +28,9 @@
     
     // Cache some static regular expressions - thanks Backbone.js!
     var escapeRegExp = /[-[\]{}()+?.,\\^$|#\s]/g,
-        namedParam    = /:\w+/g,
-        splatParam    = /\*\w*/g,
-        firstParam    = /(:\w+)|(\*\w*)/;
+        namedParam   = /:\w+/g,
+        splatParam   = /\*\w*/g,
+        firstParam   = /(:\w+)|(\*\w*)/;
     
     /**
      * Represents a single route and allows to attach (and detach)
