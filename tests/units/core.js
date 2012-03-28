@@ -100,11 +100,54 @@ test('Registration and removal of routes', function() {
     s.resolve('r7.2');
 });
 
+test('Resolving an url', function() {
+    expect(10);
+    
+    var s = new Simrou();
+    
+    var desiredMethod;
+    var actionHandler = function(event, method) {
+        equal(method, desiredMethod, 'Method == desiredMethod');
+    };
+    
+    var r = s.addRoute('r1', function() {
+        ok(true);
+    }).get(actionHandler).post(actionHandler);
+    
+    // Specifing method a -> triggers a + *
+    desiredMethod = 'get';
+    s.resolve('r1', desiredMethod);
+    
+    // Specifing method b -> triggers b + *
+    desiredMethod = 'post';
+    s.resolve('r1', desiredMethod);
+    
+    // Not specifing a method triggers only *
+    var b = s.resolve('r1');
+    ok(b, 'Resolving an url successfuly makes resolve() return true.');
+    
+    // Not resolvable url does not trigger anything and returns false
+    b = s.resolve('r2');
+    equal(b, false, 'Resolving an url unsuccessfuly makes resolve() return false.');
+    
+    // Providing a falsy value for the url makes the router return false
+    b = s.resolve(0);
+    equal(b, false, 'Providing a falsy value for the url makes the router return false.');
+    
+    // If two routes match the url, only the one that got registered first gets triggered
+    s.addRoute('*', function() {
+        ok(false);
+    });
+    
+    b = s.resolve('r1');
+    ok(b, 'Resolving an url that has more than one match works.');
+});
+
 test('Navigating to an url', function() {
     expect(5);
     
     var s = new Simrou();
-    var r = s.addRoute('r1', function() {
+    var r = s.addRoute('r1').get(function() {
         ok(true);
     });
     
@@ -122,4 +165,7 @@ test('Navigating to an url', function() {
     
     // Result should be "self"
     equal(r, s, 'Simrou.navigate() provides an fluid interface.');
+    
+    // Reset the hash (shouldn't trigger anything)
+    window.location.hash = '';
 });

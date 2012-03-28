@@ -265,8 +265,7 @@
          * - method is optional.
          * - Returns true, if a match is found. */
         var resolve = function(hash, method) {
-            var match = false,
-                route, $route,
+            var route, $route,
                 name, args;
             
             if (!hash) {
@@ -295,10 +294,10 @@
                     $route.trigger('simrou:' + method.toLowerCase(), args);
                 }
                 
-                match = true;
+                return true;
             }
             
-            return match;
+            return false;
         };
         
         /* Return the current value for window.location.hash without any
