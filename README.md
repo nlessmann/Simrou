@@ -1,4 +1,4 @@
-Simrou 1.1
+Simrou 1.2
 ==========
 
 **A very tiny hash-based JavaScript routing system**
@@ -19,7 +19,7 @@ $(function() {
     var router = new Simrou();
     
     // Register a route that matches all edit requests to your articles
-    var editRoute = router.registerRoute('/article/:id/edit');
+    var editRoute = router.addRoute('/article/:id/edit');
     
     // Bind an action handler to that route
     editRoute.get(function(eventObject, method, id) {
@@ -87,7 +87,7 @@ same as in Backbone.js).
 Parameters and splats can be mixed:
 
 ```javascript
-var articleRoute = router.registerRoute('/articles/:edit/*action');
+var articleRoute = router.addRoute('/articles/:edit/*action');
 ```
 
 Any action handler attached to this route will be called with the following arguments:
@@ -103,7 +103,7 @@ function actionHandler(event, method, edit, action)
 Action handlers can be attached via jQuery events instead of using Simrou's <code>attachAction()</code> method:
 
 ```javascript
-var route = router.registerRoute('some/route');
+var route = router.addRoute('some/route');
 
 // This..
 $(route).on('simrou:get', eventHandler);

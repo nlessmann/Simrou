@@ -15,7 +15,7 @@
             // - - - - -
             
             // Register a route that matches all articles
-            var articles = router.registerRoute('/articles/:id');
+            var articles = router.addRoute('/articles/:id');
             
             // Attach an action for GET requests to that route
             articles.attachAction('get', function(event, method, id) {
@@ -31,21 +31,21 @@
             
             // Register a second route (for the homepage) and specify an action handler
             // for GET requests right away by using the optional second parameter:
-            router.registerRoute('/homepage', function(e, method) {
+            router.addRoute('/homepage', function(e, method) {
                 alert('Homepage called, using HTTP method => ' + method);
             });
             
             // - - - - -
             
             // Register a route with a wildcard in it:
-            router.registerRoute('/portfolio/:section/*').get(function(e, method, section, path) {
+            router.addRoute('/portfolio/:section/*').get(function(e, method, section, path) {
                 alert(section + ' ### ' + path);
             });
             
             // - - - - -
             
             // Bulk register routes and action handlers
-            router.registerRoutes({
+            router.addRoutes({
                 '/another/route': {
                     get: [
                         function() { alert('1.1'); },

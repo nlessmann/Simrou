@@ -22,7 +22,7 @@
 
 ;(function($, window, undefined) {
 
-    var version = '1.1.3';
+    var version = '1.2.0';
     
     var Simrou, Route;
     
@@ -198,7 +198,7 @@
             observingHash = false;
         
         /* Allows to register a new route with this simrou instance. */
-        var registerRoute = function(pattern, actionHandler) {
+        var addRoute = function(pattern, actionHandler) {
             var route = (pattern instanceof Route) ? pattern : new Route(pattern);
             
             if (actionHandler) {
@@ -214,20 +214,20 @@
         };
         
         /* Allows to bulk register routes. */
-        var registerRoutes = function(routes) {
+        var addRoutes = function(routes) {
             var list;
             
             if ($.isArray(routes)) {
                 list = [];
                 
                 for (var i = 0; i < routes.length; i++) {
-                    list.push( registerRoute(routes[i]) );
+                    list.push( addRoute(routes[i]) );
                 }
             } else {
                 list = {};
                 
                 for (var pattern in routes) {
-                    list[pattern] = registerRoute(pattern, routes[pattern]);
+                    list[pattern] = addRoute(pattern, routes[pattern]);
                 }
             }
             
@@ -370,8 +370,8 @@
         
         // Exports
         self.version = version;
-        self.registerRoute = registerRoute;
-        self.registerRoutes = registerRoutes;
+        self.addRoute = addRoute;
+        self.addRoutes = addRoutes;
         self.removeRoute = removeRoute;
         self.start = start;
         self.stop = stop;
@@ -380,7 +380,7 @@
         
         // Initialization
         if (initialRoutes) {
-            registerRoutes(initialRoutes);
+            addRoutes(initialRoutes);
         }
         
         return self;

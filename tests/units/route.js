@@ -7,7 +7,7 @@ module('Route');
     strictEqual(r.match(''), false, 'match("") === false');
     
     // Register a route and specify a static the pattern only
-    r = s.registerRoute('asf');
+    r = s.addRoute('asf');
     equal(String(r.getRegExp()), String(/^asf$/), 'Registering a route with a static pattern leads to the correct regular expression.');
     
     deepEqual(r.match('asf'), 'match("asf") return an empty array for this route.');
@@ -15,7 +15,7 @@ module('Route');
     strictEqual(r.match('qwe'), false, 'match("qwe") === false');
     
     // Register a route with mixed types of parameters in the pattern
-    r = s.registerRoute('/test/:named/*splat/:anotherNamed/*');
+    r = s.addRoute('/test/:named/*splat/:anotherNamed/*');
     equal(String(r.getRegExp()), String(/^\/test\/([^\/]+)\/(.*?)\/([^\/]+)\/(.*?)$/),
         'Registering a route containing mixed parameter types returns the expected regular expression.');
     
@@ -27,7 +27,7 @@ test('Assembling a route', function() {
     expect(5);
     
     var s = new Simrou();
-    var r = s.registerRoute('/test/:named/*splat/:anotherNamed/*');
+    var r = s.addRoute('/test/:named/*splat/:anotherNamed/*');
     
     // Test normal assembling
     var a = r.assemble(0, 'john', 'doe', 'junior');
@@ -46,7 +46,7 @@ test('Assembling a route', function() {
     equal(a, '/test/mr/john/doe/junior', 'Providing a function for a parameter works.');
     
     // Try to assemble a route based on a regular expression
-    r = s.registerRoute(/^.+$/);
+    r = s.addRoute(/^.+$/);
     raises(r.assemble, 'Trying to assemble a route that is based on a regular expression fails.');
     
 });
