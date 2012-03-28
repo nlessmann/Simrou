@@ -169,3 +169,5 @@ test('Navigating to an url', function() {
     // Reset the hash (shouldn't trigger anything)
     window.location.hash = '';
 });
+
+// => Starting and stopping the router

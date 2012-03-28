@@ -162,7 +162,7 @@
         self.get = shortcut('get');
         self.post = shortcut('post');
         self.put = shortcut('put');
-        self['delete'] = self.del = shortcut('delete');
+        self.delete = shortcut('delete');
         
         // Initialization
         if (pattern instanceof RegExp) {
