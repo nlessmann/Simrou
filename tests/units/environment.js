@@ -23,6 +23,6 @@ test('Basic requirements', function() {
 test('jQuery', function() {
     expect(2);
     
-    ok(jQuery, 'Presence');
+    ok(jQuery, 'jQuery is present.');
     equal(jQuery.fn.jquery, '1.7.1', 'The jQuery version is 1.7.1');
 });

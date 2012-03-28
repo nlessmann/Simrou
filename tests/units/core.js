@@ -101,17 +101,25 @@ test('Registration and removal of routes', function() {
 });
 
 test('Navigating to an url', function() {
-    expect(1);
+    expect(5);
     
     var s = new Simrou();
-    var r = s.addRoute()
+    var r = s.addRoute('r1', function() {
+        ok(true);
+    });
     
     // Navigate -> route should get resolved, loc.hash should change
+    s.navigate('r1');
+    equal(window.location.hash, '#r1', 'Navigating to an url updates window.location.hash to that url.');
     
     // Navigate to the same route again -> route should get resolved again
+    s.navigate('r1');
     
     // Navigating to a not resolvable route -> hash should get
     // chained but no action handler get triggered
+    var r = s.navigate('r2');
+    equal(window.location.hash, '#r2', 'Navigation to an url that does not match any route updates the hash.');
     
     // Result should be "self"
+    equal(r, s, 'Simrou.navigate() provides an fluid interface.');
 });
