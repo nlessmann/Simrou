@@ -1,6 +1,8 @@
-Simrou - Simple javascript routing framework
+### Simrou - Simple javascript routing framework
 
-**Copyright (c) 2012 büro für ideen, www.buero-fuer-ideen.de**
+Copyright (c) 2012 büro für ideen, www.buero-fuer-ideen.de
+
+* * *
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the "Software"),
