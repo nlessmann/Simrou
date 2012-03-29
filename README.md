@@ -104,7 +104,7 @@ The route object provides a nifty helper method to get a concrete url:
 
 ```javascript
 var article = router.addRoute('/articles/:id/*action');
-article.assemble(17, 'edit'); // returns: /articles/17/edit
+var url = article.assemble(17, 'edit'); // returns: /articles/17/edit
 ```
 
 Action handlers can be attached via jQuery events instead of using Simrou's <code>attachAction()</code> method:
