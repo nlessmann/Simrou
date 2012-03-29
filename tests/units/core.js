@@ -217,7 +217,7 @@ test('Starting the router - 2', function() {
     expect(1);
     stop(1);
     
-    s = new Simrou();
+    var s = new Simrou();
 
     // Does not navigate to initial hash, if another hash is already set
     // but should try to resolve that hash instead
