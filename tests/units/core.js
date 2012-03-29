@@ -100,7 +100,7 @@ test('Registration and removal of routes', function() {
     s.resolve('r7.2');
 });
 
-test('Resolving an url', function() {
+test('Resolving a url', function() {
     expect(10);
     
     var s = new Simrou();
@@ -124,11 +124,11 @@ test('Resolving an url', function() {
     
     // Not specifing a method triggers only *
     var b = s.resolve('r1');
-    ok(b, 'Resolving an url successfuly makes resolve() return true.');
+    ok(b, 'Resolving a url successfuly makes resolve() return true.');
     
     // Not resolvable url does not trigger anything and returns false
     b = s.resolve('r2');
-    equal(b, false, 'Resolving an url unsuccessfuly makes resolve() return false.');
+    equal(b, false, 'Resolving a url unsuccessfuly makes resolve() return false.');
     
     // Providing a falsy value for the url makes the router return false
     b = s.resolve(0);
@@ -140,10 +140,10 @@ test('Resolving an url', function() {
     });
     
     b = s.resolve('r1');
-    ok(b, 'Resolving an url that has more than one match works.');
+    ok(b, 'Resolving a url that has more than one match works.');
 });
 
-test('Navigating to an url', function() {
+test('Navigating to a url', function() {
     expect(5);
     
     var s = new Simrou();
@@ -153,7 +153,7 @@ test('Navigating to an url', function() {
     
     // Navigate -> route should get resolved, loc.hash should change
     s.navigate('r1');
-    equal(window.location.hash, '#r1', 'Navigating to an url updates window.location.hash to that url.');
+    equal(window.location.hash, '#r1', 'Navigating to a url updates window.location.hash to that url.');
     
     // Navigate to the same route again -> route should get resolved again
     s.navigate('r1');
@@ -161,13 +161,32 @@ test('Navigating to an url', function() {
     // Navigating to a not resolvable route -> hash should get
     // chained but no action handler get triggered
     var r = s.navigate('r2');
-    equal(window.location.hash, '#r2', 'Navigation to an url that does not match any route updates the hash.');
+    equal(window.location.hash, '#r2', 'Navigation to a url that does not match any route updates the hash.');
     
     // Result should be "self"
-    equal(r, s, 'Simrou.navigate() provides an fluid interface.');
+    equal(r, s, 'Simrou.navigate() provides a fluid interface.');
     
     // Reset the hash (shouldn't trigger anything)
     window.location.hash = '';
 });
 
-// => Starting and stopping the router
+test('Starting and stopping the router', function() {
+    expect(0);
+    
+    var s = new Simrou();
+
+    // Navigates to initial hash if hash was empty
+    
+    // Does not navigate to initial hash, if another hash is already set
+    // but should try to resolve that hash instead
+    
+    // No initial hash and hash not set - nothing happens
+    
+    // Listens to hashchanges afterwards
+    
+    // Listens to form submissions afterwards
+    
+    // Stop stops those two behaviours
+    
+    // Both methods return a fluid interface
+});
