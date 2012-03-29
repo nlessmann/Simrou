@@ -1,5 +1,4 @@
 Simrou - Simple javascript routing framework
---------------------------------------------
 
 **Copyright (c) 2012 büro für ideen, www.buero-fuer-ideen.de**
 
