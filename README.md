@@ -100,6 +100,13 @@ function actionHandler(event, method, edit, action)
 * method is a string such as 'get' or 'post', specifing the desired HTTP method.
 * edit and action are the values extracted from the route.
 
+The route object provides a nifty helper method to get a concrete url:
+
+```javascript
+var article = router.addRoute('/articles/:id/*action');
+article.assemble(17, 'edit'); // returns: /articles/17/edit
+```
+
 Action handlers can be attached via jQuery events instead of using Simrou's <code>attachAction()</code> method:
 
 ```javascript
