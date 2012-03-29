@@ -327,19 +327,20 @@
          * events and navigates to the specified initial hash, if window.
          * location.hash is empty.
          * - initialHash is optional
-         * - If dontObserverHash evaluates to "true", the event handler
-         *   for onHashChange is NOT registered. Useful if you want to
-         *   use any other plugin/method to handle/observe hash changes. */
-        var start = function(initialHash, dontObserveHash, dontObserveForms) {
+         * - If observeHash is false, the event handler for onHashChange is
+         *   NOT registered. Useful if you want to use any other plugin/method
+         *   to handle/observe hash changes.
+         * - The same applies to the "observeForms" parameter. */
+        var start = function(initialHash, observeHash, observeForms) {
         
             // Register event handler for the onHashChange event
-            if (!dontObserveHash) {
+            if (typeof observeHash == 'undefined' || observeHash) {
                 $(window).on('hashchange', resolveHash);
                 observingHash = true;
             }
             
             // Listen to form submissions...
-            if (!dontObserveForms) {
+            if (typeof observeForms == 'undefined' || observeForms) {
                 $('body').on('submit', 'form', handleFormSubmit);
                 observingForms = true;
             }
