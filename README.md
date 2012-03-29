@@ -5,7 +5,7 @@ Simrou 1.2
 
 Simrou is a small javascript framework, that allows to bind action handlers to <code>window.location.hash</code>.
 This is in particular useful for the development of single-page web applications. See the demo code below to get
-an idea of this works.
+an idea of how this works.
 
 In contrary to other frameworks with similar features, Simrou is intended to be very simple to setup and use. 
 It does not provide any other features beside the routing - therefore it is very lightweight and flexible.
@@ -55,7 +55,7 @@ http://your-domain.tld/some/path.html#/article/182/edit
 Advanced usage
 --------------
 
-You can as well add more than one route or action handler at a time:
+You can add more than one route or action handler at a time:
 
 ```javascript
 $(function() {
@@ -116,7 +116,7 @@ var route = router.addRoute('some/route');
 $(route).on('simrou:get', eventHandler);
 
 // ..equals:
-route.attachAction('get', eventHandler);
+route.get(eventHandler);
 ```
 
 Requirements &amp; License
