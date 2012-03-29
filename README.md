@@ -119,7 +119,7 @@ $(route).on('simrou:get', eventHandler);
 route.get(eventHandler);
 ```
 
-If you want to catch a route regardless which HTTP method was intended to be used, you can do that as well:
+If you want to catch a route regardless which HTTP method was intended, you can do that as well:
 
 ```javascript
 route.attachAction(function() {
@@ -134,3 +134,4 @@ Simrou requires jQuery 1.7 or newer and is released under the MIT license.
 
 Internally, Simrou binds itself to the <code>onHashChange</code> event. If you want to include a fallback for older 
 browser or the IE, Simrou works out of the box with Ben Alman's [HashChange Plugin for jQuery](http://benalman.com/projects/jquery-hashchange-plugin/).
+No setup required.

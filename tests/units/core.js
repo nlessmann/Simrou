@@ -170,7 +170,7 @@ test('Navigating to a url', function() {
     window.location.hash = '';
 });
 
-test('Starting and stopping the router', function() {
+test('Starting the router - 1', function() {
     expect(6);
     stop(3);
     
@@ -204,35 +204,21 @@ test('Starting and stopping the router', function() {
     $('body').append($form);
     
     $form.submit();
+    $form.remove();
     
     // After a form has been submitted, the hash should not have been altered
     equal(window.location.hash, '#rr2', 'A submitted form does not cause window.location.hash to be updated.');
     
-    // ---
-    // => split the test at this point!
-    return;
-    expect(3);
-    // ---
+    // Reset the scene
+    window.location.hash = 'rr6';
+});
+
+test('Starting the router - 2', function() {
+    expect(1);
+    stop(1);
     
-    // Stop stops those two behaviours
-    s.addRoute('rr4', function() { ok(false); });
-    s.addRoute('rr5', function() { ok(false); });
-    
-    f = s.stop();
-    
-    // This triggers nothing
-    window.location.hash = 'rr4';
-    
-    $form.prop('action', 'rr5').on('submit', function() {
-        start();
-        return false;
-    });
-    
-    $form.submit();
-    
-    // Test for fluent interface
-    equal(f, s, 'Simrou.stop() provides a fluid interface.');
-    
+    s = new Simrou();
+
     // Does not navigate to initial hash, if another hash is already set
     // but should try to resolve that hash instead
     s.addRoute('rr6').get(function() {
@@ -240,12 +226,18 @@ test('Starting and stopping the router', function() {
         start();
     });
     
-    window.location.hash = 'rr6';
-    s.start('rr4').stop();
+    // window.location.hash == 'rr6'
+    s.start('rr4');
     
-    // No initial hash and hash not set - nothing happens
+    // Reset the scene
     window.location.hash = '';
-    s.start().stop();
+});
+
+test('Starting the router - 3', function() {
+    expect(1);
+    stop(1);
+    
+    var s = new Simrou();
     
     // Telling Simrou not to track hash changes
     s.addRoute('rr7', function() {
@@ -259,7 +251,47 @@ test('Starting and stopping the router', function() {
     window.location.hash = 'rr8';
     window.location.hash = 'rr9';
     
-    $form.prop('action', 'rr8');
+    var $form = $('<form action="rr8" method="post"></form>');
+    $form.on('submit', function() {
+        start();
+        return false;
+    });
+    $('body').append($form);
+    
+    $form.submit();
+    $form.remove();
+    
+    // Reset the scene
+    window.location.hash = '';
+});
+
+test('Stopping the router', function() {
+    expect(1);
+    stop(1);
+    
+    var s = new Simrou();
+    
+    // Stop stops those two behaviours
+    s.addRoute('rr4', function() { ok(false); });
+    s.addRoute('rr5', function() { ok(false); });
+    
+    var f = s.start().stop();
+    
+    // Test for fluent interface
+    equal(f, s, 'Simrou.stop() provides a fluid interface.');
+    
+    // This triggers nothing
+    window.location.hash = 'rr4';
+    
+    // Build a new form and submit it -> triggers nothing
+    var $form = $('<form action="rr5" method="post"></form>');
+    $form.on('submit', function() {
+        start();
+        return false;
+    });
+    
+    $('body').append($form);
+    
     $form.submit();
     $form.remove();
 });
