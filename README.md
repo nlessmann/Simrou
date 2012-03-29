@@ -76,7 +76,7 @@ $(function() {
 ```
 
 You can use two different types of wildcards in your routes: **Parameters** and **Splats** (this is just the 
-same as in Backbone.js).
+same as in [Backbone.js](http://documentcloud.github.com/backbone/)).
 
 * Parameters are introduced by a colon and end at the next slash.  
   e.g. "/test/:name" matches "/test/mike" and "/test/joe", but not "/test/joe/something".

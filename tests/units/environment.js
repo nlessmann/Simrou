@@ -14,7 +14,7 @@ test('Basic requirements', function() {
     equal(window.location.hash, '#newHash', 'window.location.hash is writable.');
     
     window.location.hash = '#newHash';
-    equal(window.location.hash, '#newHash', 'A trailing hash symbol gets ignored while writing to window.location.hash.');
+    equal(window.location.hash, '#newHash', 'A leading hash symbol gets ignored while writing to window.location.hash.');
     
     // Reset the hash
     window.location.hash = '';
