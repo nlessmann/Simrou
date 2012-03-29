@@ -119,6 +119,15 @@ $(route).on('simrou:get', eventHandler);
 route.get(eventHandler);
 ```
 
+If you want to catch a route regardless which HTTP method was intended to be used, you can do that as well:
+
+```javascript
+var route = router.addRoute('some/route');
+route.attachAction(function() {
+    // ..do awesome stuff..
+});
+```
+
 Requirements &amp; License
 --------------------------
 
