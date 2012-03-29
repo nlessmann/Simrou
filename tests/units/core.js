@@ -170,41 +170,49 @@ test('Navigating to a url', function() {
     window.location.hash = '';
 });
 
-// @todo => Port to asyncTest
 test('Starting and stopping the router', function() {
-    expect(9);
+    expect(6);
+    stop(3);
     
     var s = new Simrou();
 
     // Navigates to initial hash if hash was empty
     s.addRoute('rr1').get(function() {
         ok(true, 'If window.location.hash was empty, start() resolves the provided initial hash.');
+        start();
     });
     
     var f = s.start('rr1');
+    
     equal(f, s, 'Simrou.start() provides a fluid interface.');
     equal(window.location.hash, '#rr1', 'If window.location.hash was empty, start() navigates to the provided initial hash.');
     
     // Listens to hashchanges afterwards
     s.addRoute('rr2').get(function() {
         ok(true, 'The router listens to hash changes after start() was called.');
+        start();
     });
     window.location.hash = 'rr2';
     
     // Listens to form submissions afterwards
     s.addRoute('rr3').post(function() {
         ok(true, 'The router listens to form submissions after start() was called.');
+        start();
     });
     
     var $form = $('<form action="rr3" method="post"></form>');
     $('body').append($form);
+    
     $form.submit();
     
     // After a form has been submitted, the hash should not have been altered
     equal(window.location.hash, '#rr2', 'A submitted form does not cause window.location.hash to be updated.');
     
-    // Wait for the hashchange event to be dispatched
+    // ---
+    // => split the test at this point!
     return;
+    expect(3);
+    // ---
     
     // Stop stops those two behaviours
     s.addRoute('rr4', function() { ok(false); });
@@ -212,16 +220,24 @@ test('Starting and stopping the router', function() {
     
     f = s.stop();
     
+    // This triggers nothing
     window.location.hash = 'rr4';
-    $form.prop('action', 'rr5').on('submit', function() { return false; });
+    
+    $form.prop('action', 'rr5').on('submit', function() {
+        start();
+        return false;
+    });
+    
     $form.submit();
     
+    // Test for fluent interface
     equal(f, s, 'Simrou.stop() provides a fluid interface.');
     
     // Does not navigate to initial hash, if another hash is already set
     // but should try to resolve that hash instead
     s.addRoute('rr6').get(function() {
         ok(true, 'If window.location.hash is not empty when Simrou.start() is called, that hash gets resolved.');
+        start();
     });
     
     window.location.hash = 'rr6';
@@ -234,10 +250,12 @@ test('Starting and stopping the router', function() {
     // Telling Simrou not to track hash changes
     s.addRoute('rr7', function() {
         ok(true, 'An initial routes gets stilled navigated to if hash change tracking is disabled.');
+        start();
     });
-    s.addRoute('rr8', function() { ok(false); });
     
+    s.addRoute('rr8', function() { ok(false); });
     s.start('rr7', false, false);
+    
     window.location.hash = 'rr8';
     window.location.hash = 'rr9';
     
