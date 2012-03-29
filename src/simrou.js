@@ -303,14 +303,15 @@
         
         /* Return the current value for window.location.hash without any
          * leading hash keys (does not remove leading slashes!). */
-        var getHash = function() {
-            return loc.hash.replace(/^#*(.*)$/, '$1');
+        var getHash = function(url) {
+            return (url || loc.hash).replace(/^[^#]*#+(.*)$/, '$1');
         };
         
         /* Takes whatever window.location.hash currently is and tries
          * to resolves that hash. */
-        var resolveHash = function() {
-            resolve(getHash(), 'get');
+        var resolveHash = function(event) {
+            var hash = getHash(event.originalEvent.newURL);
+            resolve(hash, 'get');
         };
         
         /* Can be bound to forms (onSubmit). Suppresses the submission of
@@ -332,7 +333,7 @@
          *   to handle/observe hash changes.
          * - The same applies to the "observeForms" parameter. */
         var start = function(initialHash, observeHash, observeForms) {
-        
+            
             // Register event handler for the onHashChange event
             if (typeof observeHash == 'undefined' || observeHash) {
                 $(window).on('hashchange', resolveHash);
@@ -397,4 +398,4 @@
     // Global exports
     window.Simrou = Simrou;
     
-})(jQuery, window);
+})(jQuery, this);
