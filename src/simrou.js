@@ -195,7 +195,8 @@
         var self = this,
             loc = window.location,
             routes = {},
-            observingHash = false;
+            observingHash = false,
+            observingForms = false;
         
         /* Allows to register a new route with this simrou instance. */
         var addRoute = function(pattern, actionHandler) {
@@ -329,7 +330,7 @@
          * - If dontObserverHash evaluates to "true", the event handler
          *   for onHashChange is NOT registered. Useful if you want to
          *   use any other plugin/method to handle/observe hash changes. */
-        var start = function(initialHash, dontObserveHash) {
+        var start = function(initialHash, dontObserveHash, dontObserveForms) {
         
             // Register event handler for the onHashChange event
             if (!dontObserveHash) {
@@ -338,7 +339,10 @@
             }
             
             // Listen to form submissions...
-            $('body').on('submit', 'form', handleFormSubmit);
+            if (!dontObserveForms) {
+                $('body').on('submit', 'form', handleFormSubmit);
+                observingForms = true;
+            }
             
             // Resolve the current / initial hash.
             var hash = getHash();
@@ -363,6 +367,7 @@
             
             // Stop listening to form submission
             $('body').off('submit', 'form', handleFormSubmit);
+            observingForms = false;
             
             return self;
         };
