@@ -1,6 +1,10 @@
 module('Route');
 
 /*
+test('Registering a route', function() {
+    expect();
+    
+    var r = s.addRoute();
     equal(String(r.getRegExp()), '/^.+$/', 'Registering a new route without passing any arguments returns a wildcard route.');
     
     deepEqual(r.match('asf'), [], 'match("asf") returns an empty array for this route.');
@@ -20,7 +24,7 @@ module('Route');
         'Registering a route containing mixed parameter types returns the expected regular expression.');
     
     // Register a route based on a regular expression
-        
+});
 */
 
 test('Assembling a route', function() {
