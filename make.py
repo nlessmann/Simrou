@@ -41,6 +41,13 @@ def main():
     compiledCode = response.read()
     conn.close()
     
+    # Did an error occur?
+    if not compiledCode.strip():
+        print "Error"
+        
+        # Save the uncompiled code instead
+        compiledCode = code
+    
     # Write the compiled data to the disc
     outputFile = open('build/simrou.min.js', 'w')
     outputFile.write(compiledCode)
