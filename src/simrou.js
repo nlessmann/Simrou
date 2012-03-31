@@ -162,7 +162,7 @@
         self.get = shortcut('get');
         self.post = shortcut('post');
         self.put = shortcut('put');
-        self.delete = shortcut('delete');
+        self['delete'] = self.del = shortcut('delete');
         
         // Initialization
         if (pattern instanceof RegExp) {
@@ -210,7 +210,7 @@
                 }
             }
             
-            routes[ String(route.getRegExp()) ] = route;
+            routes[ route.getRegExp().toString() ] = route;
             return route;
         };
         
@@ -241,7 +241,7 @@
                 route = new Route(route);
             }
             
-            var name = String(route.getRegExp());
+            var name = route.getRegExp().toString();
             
             if (routes[name]) {
                 delete routes[name];
