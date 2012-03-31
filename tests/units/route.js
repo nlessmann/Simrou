@@ -1,31 +1,63 @@
 module('Route');
 
-/*
-test('Registering a route', function() {
-    expect();
+test('Wildcard routes', function() {
+    expect(3);
     
+    // Register a route without arguments
+    var s = new Simrou();
     var r = s.addRoute();
-    equal(String(r.getRegExp()), '/^.+$/', 'Registering a new route without passing any arguments returns a wildcard route.');
+    equal(r.getRegExp().toString(), '/^.+$/', 'Registering a new route without passing any arguments returns a wildcard route.');
     
-    deepEqual(r.match('asf'), [], 'match("asf") returns an empty array for this route.');
+    deepEqual(r.match('asf'), [], 'match("asf") returns an empty array.');
     strictEqual(r.match(''), false, 'match("") === false');
+});
+
+test('Static routes', function() {
+    expect(4);
     
-    // Register a route and specify a static the pattern only
-    r = s.addRoute('asf');
-    equal(String(r.getRegExp()), String(/^asf$/), 'Registering a route with a static pattern leads to the correct regular expression.');
+    // Register a route and specify a static pattern only
+    var s = new Simrou();
+    var r = s.addRoute('fsa');
+    equal(r.getRegExp().toString(), /^fsa$/.toString(), 'Correct RegExp');
     
-    deepEqual(r.match('asf'), 'match("asf") return an empty array for this route.');
+    deepEqual(r.match('fsa'), [], 'match("fsa") returns an empty array.');
     strictEqual(r.match(''), false, 'match("") === false');
     strictEqual(r.match('qwe'), false, 'match("qwe") === false');
+});
+
+test('Dynamic routes', function() {
+    expect(5);
     
     // Register a route with mixed types of parameters in the pattern
-    r = s.addRoute('/test/:named/*splat/:anotherNamed/*');
-    equal(String(r.getRegExp()), String(/^\/test\/([^\/]+)\/(.*?)\/([^\/]+)\/(.*?)$/),
-        'Registering a route containing mixed parameter types returns the expected regular expression.');
+    var s = new Simrou();
+    var r = s.addRoute('/test/:named/*splat/:anotherNamed/*');
+    equal(r.getRegExp().toString(), /^\/test\/([^\/]+)\/(.*?)\/([^\/]+)\/(.*?)$/.toString(),
+        'Correct RegExp');
+    
+    var a1 = r.match('/test/mr/john/william/smith/junior/the/third'),
+        a2 = ['mr', 'john', 'william', 'smith/junior/the/third'];
+    deepEqual(a1, a2, 'Parameters get correctly extracted.');
+    strictEqual(r.match(''), false, 'match("") === false');
+    strictEqual(r.match('qwe'), false, 'match("qwe") === false');
+    strictEqual(r.match('/test/mr/john/william'), false, 'Last parameter missing => false gets returned');
+});
+
+test('Regular expression routes', function() {
+    expect(4);
     
     // Register a route based on a regular expression
+    var s = new Simrou();
+    var p = /^abc([0-9]{3})$/;
+    
+    var r = s.addRoute(p);
+    equal(r.getRegExp().toString(), p.toString(), 'Regexp based route: Correct RegExp');
+    
+    deepEqual(r.match('abc123'), ['123'], 'Parameters get correctly extracted.');
+    strictEqual(r.match(''), false, 'match("") === false');
+    strictEqual(r.match('qwe'), false, 'match("qwe") === false');
 });
-*/
+
+
 
 test('Assembling a route', function() {
     expect(5);
