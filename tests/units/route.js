@@ -57,7 +57,9 @@ test('Regular expression routes', function() {
     strictEqual(r.match('qwe'), false, 'match("qwe") === false');
 });
 
+// Attaching action handlers
 
+// Detaching action handlers
 
 test('Assembling a route', function() {
     expect(5);
