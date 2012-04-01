@@ -82,7 +82,36 @@ test('Attaching action handlers', function() {
 });
 
 test('Detaching action handlers', function() {
-    expect(0);
+    expect(2);
+    
+    var s = new Simrou();
+    var r = s.addRoute();
+    
+    // Attach an action handler and remove all handlers for one method
+    r.get(function() {
+        ok(true, 'Action handler triggered.');
+    });
+    
+    s.resolve('asf', 'get');
+    r.detachAction('get');
+    s.resolve('asf', 'get');
+    
+    // Attach an action handler and detach only this handler
+    s = new Simrou();
+    r = s.addRoute();
+    
+    r.get(function() {
+        ok(true, 'Action handler triggered.');
+    });
+    
+    var f = function() {
+        ok(false);
+    };
+    
+    r.get(f);
+    r.detachAction('get', f);
+    
+    s.resolve('asf', 'get');
 });
 
 test('Assembling a route', function() {
