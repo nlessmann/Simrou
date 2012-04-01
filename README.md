@@ -35,10 +35,10 @@ $(function() {
     // Get the router running...
     router.start();
     
-    // Navigate somewhere (updates location.hash):
+    // Navigate somewhere (updates location.hash and resolves the URL)
     router.navigate('/article/42/edit');
     
-    // ..or resolve a URL without touching location.hash
+    // ..or resolve without touching location.hash
     router.resolve('/article/18/edit', 'POST');
 });
 ```
