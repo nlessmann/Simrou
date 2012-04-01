@@ -56,9 +56,34 @@ test('Regular expression routes', function() {
     strictEqual(r.match('qwe'), false, 'match("qwe") === false');
 });
 
-// Attaching action handlers
+test('Attaching action handlers', function() {
+    expect(3);
+    
+    var s = new Simrou();
+    var r = s.addRoute();
+    
+    // Note: Most of "attaching action handlers" is already covered in
+    // the tests for core.js -> Resolving a URL
+    
+    // Attach multiple action handlers
+    r.attachActions({
+        get: function() {
+            ok(true, 'Multiple action handlers can be attached in one step. (1/3)');
+        },
+        post: [ function() {
+            ok(true, 'Multiple action handlers can be attached in one step. (2/3)');
+        }, function() {
+            ok(true, 'Multiple action handlers can be attached in one step. (3/3)');
+        } ]
+    });
+    
+    s.resolve('asf', 'get');
+    s.resolve('asf', 'post');
+});
 
-// Detaching action handlers
+test('Detaching action handlers', function() {
+    expect(0);
+});
 
 test('Assembling a route', function() {
     expect(5);
