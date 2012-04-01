@@ -9,7 +9,6 @@ Simrou = function(initialRoutes) {
     }
     
     var self = this,
-        loc = window.location,
         routes = {},
         observingHash = false,
         observingForms = false;

@@ -5,6 +5,10 @@
 
 ;(function($, window, undefined) {
 
+    // Make a local copy of the location object
+    var loc = window.location;
+
+    // Declare classes
     var Simrou, Route;
         
     // @include core.js 
