@@ -31,8 +31,7 @@ test('Dynamic routes', function() {
     // Register a route with mixed types of parameters in the pattern
     var s = new Simrou();
     var r = s.addRoute('/test/:named/*splat/:anotherNamed/*');
-    equal(r.getRegExp().toString(), /^\/test\/([^\/]+)\/(.*?)\/([^\/]+)\/(.*?)$/.toString(),
-        'Correct RegExp');
+    equal(r.getRegExp().toString(), new RegExp('^\/test\/([^\/]+)\/(.*?)\/([^\/]+)\/(.*?)$').toString(), 'Correct RegExp');
     
     var a1 = r.match('/test/mr/john/william/smith/junior/the/third'),
         a2 = ['mr', 'john', 'william', 'smith/junior/the/third'];
