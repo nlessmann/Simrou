@@ -1,8 +1,15 @@
-import httplib, urllib, re, os.path
+import os.path
+import re
+import httplib
+import urllib
 
 def main():
+    # Get the dirname of the Simrou trunk
+    filename = os.path.realpath(__file__)
+    dirname = os.path.dirname(filename)
+
     # Read the main javascript file
-    inputFile = open('src/simrou.js', 'r');
+    inputFile = open('%s/src/simrou.js' % dirname, 'r');
     code = inputFile.read()
     inputFile.close()
     
@@ -12,7 +19,7 @@ def main():
     
     # Process all @include commands
     for scriptName in matches:
-        filename = 'src/%s' % scriptName
+        filename = '%s/src/%s' % (dirname, scriptName)
         if not os.path.isfile(filename):
             continue
         
@@ -41,15 +48,15 @@ def main():
     compiledCode = response.read()
     conn.close()
     
-    # Did an error occur?
+    # Did an error occur? (= empty string got returned)
     if not compiledCode.strip():
-        print "Error"
+        print 'Error'
         
         # Save the uncompiled code instead
         compiledCode = code
     
     # Write the compiled data to the disc
-    outputFile = open('build/simrou.min.js', 'w')
+    outputFile = open('%s/build/simrou.min.js' % dirname, 'w')
     outputFile.write(compiledCode)
     outputFile.close()
     
