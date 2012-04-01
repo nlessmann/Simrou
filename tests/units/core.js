@@ -100,7 +100,7 @@ test('Registration and removal of routes', function() {
     s.resolve('r7.2');
 });
 
-test('Resolving a url', function() {
+test('Resolving a URL', function() {
     expect(10);
     
     var s = new Simrou();
@@ -124,26 +124,26 @@ test('Resolving a url', function() {
     
     // Not specifing a method triggers only *
     var b = s.resolve('r1');
-    ok(b, 'Resolving a url successfuly makes resolve() return true.');
+    ok(b, 'Resolving a URL successfuly makes resolve() return true.');
     
-    // Not resolvable url does not trigger anything and returns false
+    // Not resolvable URL does not trigger anything and returns false
     b = s.resolve('r2');
-    equal(b, false, 'Resolving a url unsuccessfuly makes resolve() return false.');
+    equal(b, false, 'Resolving a URL unsuccessfuly makes resolve() return false.');
     
-    // Providing a falsy value for the url makes the router return false
+    // Providing a falsy value for the URL makes the router return false
     b = s.resolve(0);
-    equal(b, false, 'Providing a falsy value for the url makes the router return false.');
+    equal(b, false, 'Providing a falsy value for the URL makes the router return false.');
     
-    // If two routes match the url, only the one that got registered first gets triggered
+    // If two routes match the URL, only the one that got registered first gets triggered
     s.addRoute('*', function() {
         ok(false);
     });
     
     b = s.resolve('r1');
-    ok(b, 'Resolving a url that has more than one match works.');
+    ok(b, 'Resolving a URL that has more than one match triggers only the first match.');
 });
 
-test('Navigating to a url', function() {
+test('Navigating to a URL', function() {
     expect(5);
     
     var s = new Simrou();
@@ -153,7 +153,7 @@ test('Navigating to a url', function() {
     
     // Navigate -> route should get resolved, loc.hash should change
     s.navigate('r1');
-    equal(window.location.hash, '#r1', 'Navigating to a url updates window.location.hash to that url.');
+    equal(window.location.hash, '#r1', 'Navigating to a URL updates window.location.hash to that URL.');
     
     // Navigate to the same route again -> route should get resolved again
     s.navigate('r1');
@@ -161,7 +161,7 @@ test('Navigating to a url', function() {
     // Navigating to a not resolvable route -> hash should get
     // chained but no action handler get triggered
     var r = s.navigate('r2');
-    equal(window.location.hash, '#r2', 'Navigation to a url that does not match any route updates the hash.');
+    equal(window.location.hash, '#r2', 'Navigation to a URL that does not match any route updates the hash.');
     
     // Result should be "self"
     equal(r, s, 'Simrou.navigate() provides a fluid interface.');
