@@ -91,9 +91,12 @@ Simrou = function(initialRoutes) {
         // Iterate over all registered routes..
         for (var name in routes) {
             route = routes[name];
-            args = route.match(hash);
+            if ( !(route instanceof Route) ) {
+                continue;
+            }
             
             // Route isn't a match? Continue with the next one.
+            args = route.match(hash);
             if (args === false) {
                 continue;
             }
