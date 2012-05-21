@@ -52,8 +52,7 @@ Route = function(pattern) {
             actions = tmp;
         }
         
-        for (method in actions) {
-            var list = actions[method];
+        $.each(actions, function(method, list) {
             if (!$.isArray(list)) {
                 list = [list];
             }
@@ -61,7 +60,7 @@ Route = function(pattern) {
             for (var i = 0; i < list.length; i++) {
                 attachAction(method, list[i]);
             }
-        }
+        });
         
         return self;
     };
