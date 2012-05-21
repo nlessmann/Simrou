@@ -42,9 +42,9 @@ Simrou = function(initialRoutes) {
         } else {
             list = {};
             
-            for (var pattern in routes) {
-                list[pattern] = addRoute(pattern, routes[pattern]);
-            }
+            $.each(function(pattern, route) {
+                list[pattern] = addRoute(pattern, route);
+            });
         }
         
         return list;
