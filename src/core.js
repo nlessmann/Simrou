@@ -131,12 +131,14 @@ Simrou = function(initialRoutes) {
     
     /* Can be bound to forms (onSubmit). Suppresses the submission of
      * any form, if a matching route for the form's action is found. */
-    var handleFormSubmit = function() {
+    var handleFormSubmit = function(event) {
         var $form = $(this),
             method = String( $form.attr('method') ) || 'get',
             action = $form.attr('action');
         
-        return !( resolve(action, method) );
+        if (resolve(action, method)) {
+            event.preventDefault();
+        }
     };
     
     /* Starts the routing process - binds the Simrou instance to several
