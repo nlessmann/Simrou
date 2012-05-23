@@ -170,7 +170,14 @@ Simrou = function(initialRoutes) {
         var hash = getHash();
         if (hash == '') {
             if (initialHash) {
-                navigate(initialHash);
+                if (window.history && window.history.replaceState) {
+                    // Fixes a safari bug where the initial hash is not pushed to the history
+                    // when altering location.hash while the page is still loading.
+                    window.history.replaceState({}, document.title, '#' + initialHash.replace(/^#+/, ''));
+                    resolve(initialHash, 'get');
+                } else {
+                    navigate(initialHash);
+                }
             }
         } else {
             resolve(hash, 'get');
