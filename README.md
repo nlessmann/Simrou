@@ -136,5 +136,5 @@ Requirements &amp; License
 Simrou requires jQuery 1.7 or newer and is released under the MIT license.
 
 Internally, Simrou binds itself to the <code>onHashChange</code> event. If you want to include a fallback for older 
-browser or the IE, Simrou works out of the box with Ben Alman's [HashChange Plugin for jQuery](http://benalman.com/projects/jquery-hashchange-plugin/).
-No setup required.
+browser or the IE 7, Simrou works out of the box with Ben Alman's excellent
+[HashChange Plugin for jQuery](http://benalman.com/projects/jquery-hashchange-plugin/). No setup required.
