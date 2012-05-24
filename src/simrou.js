@@ -19,7 +19,7 @@
     // @include route.js 
     
     // Export version as a static property
-    Simrou.version = '1.2.1';
+    Simrou.version = '1.2.2';
     
     // Attach Simrou to the global object
     window.Simrou = Simrou;
