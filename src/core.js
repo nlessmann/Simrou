@@ -176,7 +176,8 @@ Simrou = function(initialRoutes) {
                     window.history.replaceState({}, document.title, '#' + initialHash.replace(/^#+/, ''));
                     resolve(initialHash, 'get');
                 } else {
-                    navigate(initialHash);
+                    // Trigger hash change when the DOM is ready (IE)
+                    $(function() { navigate(initialHash); });
                 }
             }
         } else {
