@@ -128,8 +128,8 @@ Simrou = function(initialRoutes) {
     /* Takes whatever window.location.hash currently is and tries
      * to resolves that hash. */
     var resolveHash = function(event) {
-        var hash = getHash(event.originalEvent.newURL);
-        resolve(hash, 'get');
+        var url = eventSupported ? event.originalEvent.newURL : loc.hash;
+        resolve(getHash(url), 'get');
     };
     
     /* Can be bound to forms (onSubmit). Suppresses the submission of
