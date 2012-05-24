@@ -5,12 +5,16 @@
 
 ;(function($, window, undefined) {
 
-    // Make a local copy of the location object
+    // Store a local reference to the location object
     var loc = window.location;
+    
+    // Check whether the hashchange event is supported
+    var docMode = window.document.documentMode,
+        eventSupported = 'onhashchange' in window && (docMode === undefined || docMode > 7);
 
     // Declare classes
     var Simrou, Route;
-        
+     
     // @include core.js 
     // @include route.js 
     
