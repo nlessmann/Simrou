@@ -34,13 +34,10 @@ class Simrou
     addRoutes: (routes) ->
         if $.isArray(routes)
             list = []
-            
             for route in routes
                 list.push( @addRoute(route) )
-            
         else
             list = {}
-            
             for own pattern, route of routes
                 list[pattern] = @addRoute(pattern, route)
         
@@ -142,7 +139,7 @@ class Simrou
                 window.history.replaceState({}, document.title, '#' + initialHash.replace(/^#+/, ''))
                 @resolve(initialHash, 'get')
             else
-                $ => @navigate(initialHash)            
+                @navigate(initialHash)            
     
     # Stopps the routing process - all event handlers registered by this
     # Simrou instance get unbind.
@@ -180,13 +177,10 @@ class Route
             else
                 @expr = /^.+$/
     
-    # Returns true if this route matches the specified hash.
+    # Returns an array if this route matches the specified hash (false otherwise).
     match: (hash) ->
         matches = @expr.exec(hash)
-        
-        return false unless $.isArray(matches)
-        
-        matches.slice(1)
+        if $.isArray(matches) then false else matches.slice(1)
     
     # Returns the regular expression that describes this route.
     getRegExp: ->
@@ -204,7 +198,6 @@ class Route
         
         $(@).on('simrou:' + method.toLowerCase(), action)
     
-    
     # Allows to bulk attach action handlers.
     attachActions: (method, actions) ->
         # Homogenize arguments
@@ -213,9 +206,7 @@ class Route
         else if $.isPlainObject(method)
             actions = method
         else
-            tmp = {}
-            tmp[method] = actions
-            actions = tmp
+            actions = new -> @[method] = actions
         
         # Attach the actions
         for own method, list of actions
@@ -258,7 +249,7 @@ class Route
                 value = ''
             
             str = str.replace(@firstParam, value)
-            ++i
+            i++
         
         str
     

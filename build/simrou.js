@@ -113,8 +113,7 @@
     };
 
     Simrou.prototype.start = function(initialHash, observeHash, observeForms) {
-      var hash,
-        _this = this;
+      var hash;
       if (observeHash == null) observeHash = true;
       if (observeForms == null) observeForms = true;
       if (observeHash) {
@@ -133,9 +132,7 @@
           window.history.replaceState({}, document.title, '#' + initialHash.replace(/^#+/, ''));
           return this.resolve(initialHash, 'get');
         } else {
-          return $(function() {
-            return _this.navigate(initialHash);
-          });
+          return this.navigate(initialHash);
         }
       }
     };
@@ -182,8 +179,11 @@
     Route.prototype.match = function(hash) {
       var matches;
       matches = this.expr.exec(hash);
-      if (!$.isArray(matches)) return false;
-      return matches.slice(1);
+      if ($.isArray(matches)) {
+        return false;
+      } else {
+        return matches.slice(1);
+      }
     };
 
     Route.prototype.getRegExp = function() {
@@ -199,7 +199,7 @@
     };
 
     Route.prototype.attachActions = function(method, actions) {
-      var action, list, tmp, _results;
+      var action, list, _results;
       if ($.isArray(method)) {
         actions = {
           '*': method
@@ -207,9 +207,9 @@
       } else if ($.isPlainObject(method)) {
         actions = method;
       } else {
-        tmp = {};
-        tmp[method] = actions;
-        actions = tmp;
+        actions = new function() {
+          return this[method] = actions;
+        };
       }
       _results = [];
       for (method in actions) {
@@ -259,7 +259,7 @@
           value = '';
         }
         str = str.replace(this.firstParam, value);
-        ++i;
+        i++;
       }
       return str;
     };
