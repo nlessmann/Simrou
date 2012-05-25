@@ -58,7 +58,7 @@ class Simrou
         isChange = (location.hash isnt hash)
         location.hash = hash
         
-        if not @observingHash or not @isChange
+        if not @observingHash or not isChange
             @resolve(hash, 'get')
         
     # Resolves a hash. Method is optional, returns true if matching route found.

@@ -69,7 +69,7 @@
       var isChange;
       isChange = location.hash !== hash;
       location.hash = hash;
-      if (!this.observingHash || !this.isChange) return this.resolve(hash, 'get');
+      if (!this.observingHash || !isChange) return this.resolve(hash, 'get');
     };
 
     Simrou.prototype.resolve = function(hash, method) {
