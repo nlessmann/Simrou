@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Simrou Demo</title>
+        
+        <script type="text/javascript" src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
+        <script type="text/javascript" src="http://coffeescript.org/extras/coffee-script.js"></script>
+        <script type="text/javascript" src="../build/simrou.min.js"></script>
+        
+        <script type="text/coffeescript">
+        # Create a new Simrou instance
+        router = new Simrou
+        
+        # Register a route
+        articlesRoute = router.addRoute '/articles/:id'
+        
+        # Attach an action handler for GET requests to this route
+        articlesRoute.get (event, method, id) ->
+            alert 'Article ID: ' + id
+        
+        # The same works for other HTTP methods, like PUT (makes sense for HTML forms)
+        articlesRoute.put ->
+            alert 'Article route matched via HTTP method = PUT'
+        
+        # Now lets register a route for the homepage
+        router.addRoute '/homepage', (event, method) ->
+            alert 'Homepage route matched via HTTP method = ' + method
+        
+        # And get the router running!
+        router.start '/homepage'
+        
+        # Register a click event handler that uses navigate() to go to a URL
+        $ ->
+            $('#test').click ->
+                # Navigate to article with ID 48
+                router.navigate '/articles/48'
+        </script>
+    </head>
+    
+    <body>
+        
+        <ul>
+            <li><a href="#/articles/172">Article 172</a></li>
+            <li><a href="#/homepage">Back to the homepage</a></li>
+        </ul>
+        
+        <button type="button" id="test">Article 48 via navigate()</button>
+        
+        <form action="/articles/921" method="put">
+            <button type="submit">Send PUT request to Article 921</button>
+        </form>
+                
+    </body>
+</html>
