@@ -27,11 +27,11 @@
         router.addRoute '/homepage', (event, method) ->
             alert 'Homepage route matched via HTTP method = ' + method
         
-        # And get the router running!
-        router.start '/homepage'
-        
-        # Register a click event handler that uses navigate() to go to a URL
         $ ->
+            # Get the router running!
+            router.start '/homepage'
+            
+            # And register a click event handler that uses navigate() to go to a URL
             $('#test').click ->
                 # Navigate to article with ID 48
                 router.navigate '/articles/48'
