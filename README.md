@@ -1,4 +1,4 @@
-Simrou 1.2
+Simrou 1.3
 ==========
 
 **A very tiny hash-based JavaScript routing system**
@@ -9,6 +9,8 @@ an idea of how this works.
 
 In contrary to other frameworks with similar features, Simrou is intended to be very simple to setup and use. 
 It does not provide any other features beside the routing - therefore it is very lightweight and flexible.
+
+Simrou is written in CoffeeScript.
 
 Demo
 ----
