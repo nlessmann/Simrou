@@ -1,6 +1,9 @@
+###*
+* @preserve Simrou v1.3.0 - Released under the MIT License.
+* Copyright (c) 2012 büro für ideen, www.buero-fuer-ideen.de
+###
+
 class Simrou
-    version: '1.3.0'
-    
     eventSupported: do ->
         docMode = window.document.documentMode
         'onhashchange' of window and (not docMode? or docMode > 7)

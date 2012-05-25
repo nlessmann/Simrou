@@ -1,7 +1,7 @@
 module('Core');
 
 test('Instantiation', function() {
-    expect(5);
+    expect(4);
     
     // Check whether Simrou is available
     ok(Simrou, 'Presence');
@@ -10,9 +10,6 @@ test('Instantiation', function() {
     // Test the creation of a new instance
     var s = new Simrou();
     ok(s instanceof Simrou, 'Using the new operator on Simrou returns a fresh instance.');
-    
-    // Check if the information about the current version is present
-    equal(typeof s.version, 'string', 'simrou.version is a string, when simrou = new Simrou().');
     
     // Environment is supposed to support the hash change event
     ok(s.eventSupported, 'simrou.eventSupported == true');

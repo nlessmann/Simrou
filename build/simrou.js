@@ -1,3 +1,9 @@
+
+/**
+* @preserve Simrou v1.3.0 - Released under the MIT License.
+* Copyright (c) 2012 büro für ideen, www.buero-fuer-ideen.de
+*/
+
 (function() {
   var Route, Simrou,
     __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
@@ -5,8 +11,6 @@
     __slice = Array.prototype.slice;
 
   Simrou = (function() {
-
-    Simrou.prototype.version = '1.3.0';
 
     Simrou.prototype.eventSupported = (function() {
       var docMode;
