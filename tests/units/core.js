@@ -11,11 +11,11 @@ test('Instantiation', function() {
     var s = new Simrou();
     ok(s instanceof Simrou, 'Using the new operator on Simrou returns a fresh instance.');
     
-    s = Simrou();
-    ok(s instanceof Simrou, 'Invoking Simrou() without the new operator returns a fresh instance as well.');
-    
     // Check if the information about the current version is present
-    equal(typeof Simrou.version, 'string', 'Simrou.version is a string.');
+    equal(typeof s.version, 'string', 'simrou.version is a string, when simrou = new Simrou().');
+    
+    // Environment is supposed to support the hash change event
+    ok(s.eventSupported, 'simrou.eventSupported == true');
 });
 
 test('Registration and removal of routes', function() {
@@ -112,7 +112,9 @@ test('Resolving a URL', function() {
     
     var r = s.addRoute('r1', function() {
         ok(true);
-    }).get(actionHandler).post(actionHandler);
+    });
+    r.get(actionHandler);
+    r.post(actionHandler);
     
     // Specifing method a -> triggers a + *
     desiredMethod = 'get';
@@ -144,7 +146,7 @@ test('Resolving a URL', function() {
 });
 
 test('Navigating to a URL', function() {
-    expect(5);
+    expect(4);
     
     var s = new Simrou();
     var r = s.addRoute('r1').get(function() {
@@ -163,15 +165,12 @@ test('Navigating to a URL', function() {
     var r = s.navigate('r2');
     equal(window.location.hash, '#r2', 'Navigation to a URL that does not match any route updates the hash.');
     
-    // Result should be "self"
-    equal(r, s, 'Simrou.navigate() provides a fluid interface.');
-    
     // Reset the hash (shouldn't trigger anything)
     window.location.hash = '';
 });
 
 test('Starting the router - 1', function() {
-    expect(6);
+    expect(5);
     stop(3);
     
     var s = new Simrou();
@@ -182,9 +181,7 @@ test('Starting the router - 1', function() {
         start();
     });
     
-    var f = s.start('rr1');
-    
-    equal(f, s, 'Simrou.start() provides a fluid interface.');
+    s.start('rr1');
     equal(window.location.hash, '#rr1', 'If window.location.hash was empty, start() navigates to the provided initial hash.');
     
     // Listens to hashchanges afterwards
@@ -266,7 +263,7 @@ test('Starting the router - 3', function() {
 });
 
 test('Stopping the router', function() {
-    expect(1);
+    expect(0);
     stop(1);
     
     var s = new Simrou();
@@ -275,10 +272,8 @@ test('Stopping the router', function() {
     s.addRoute('rr4', function() { ok(false); });
     s.addRoute('rr5', function() { ok(false); });
     
-    var f = s.start().stop();
-    
-    // Test for fluent interface
-    equal(f, s, 'Simrou.stop() provides a fluid interface.');
+    s.start();
+    s.stop();
     
     // This triggers nothing
     window.location.hash = 'rr4';
