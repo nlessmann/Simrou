@@ -214,7 +214,7 @@ class Route
             
             for action in list
                 @attachAction(method, action)
-        
+    
     # Works just like attachAction, but instead detaches the action
     # handler from the route.
     detachAction: (method, action) ->
@@ -228,7 +228,7 @@ class Route
             $(@).off(eventName, action)
         else
             $(@).off(eventName)
-        
+    
     # Assembles a concrete url out of this route.
     assemble: (values...) ->
         # Cannot assemble a route if it's based on a regular expression
