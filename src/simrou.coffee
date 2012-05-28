@@ -106,7 +106,7 @@ class Simrou
     handleFormSubmit: (event) =>
         $form = $(event.target)
         
-        method = $form.attr('method') or $form.get(0).getAttribute('method') or 'get'
+        method = $form.attr('method') or $form.get(0).getAttribute('method')
         action = $form.attr('action')
         
         if @resolve(action, method)
@@ -174,8 +174,7 @@ class Route
             if pattern?
                 # Do some escaping and replace the parameter placeholders
                 # with the proper regular expression
-                pattern = String(pattern)
-                pattern = pattern.replace(@RegExpCache.escapeRegExp, '\\$&')
+                pattern = String(pattern).replace(@RegExpCache.escapeRegExp, '\\$&')
                 pattern = pattern.replace(@RegExpCache.namedParam, '([^\/]+)')
                 pattern = pattern.replace(@RegExpCache.splatParam, '(.*?)')
                 
