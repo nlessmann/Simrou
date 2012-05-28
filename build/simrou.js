@@ -180,10 +180,31 @@
       var matches;
       matches = this.expr.exec(hash);
       if ($.isArray(matches)) {
-        return false;
-      } else {
         return matches.slice(1);
+      } else {
+        return false;
       }
+    };
+
+    Route.prototype.assemble = function() {
+      var i, str, value, values;
+      values = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
+      if (this.pattern instanceof RegExp) {
+        throw 'Assembling routes that are based on a regular expression is not supported.';
+      }
+      if (values.length > 0 && $.isArray(values[0])) values = values[0];
+      str = this.pattern;
+      i = 0;
+      while (this.firstParam.test(str)) {
+        if (values[i] != null) {
+          value = $.isFunction(values[i]) ? values[i]() : String(values[i]);
+        } else {
+          value = '';
+        }
+        str = str.replace(this.firstParam, value);
+        i++;
+      }
+      return str;
     };
 
     Route.prototype.getRegExp = function() {
@@ -241,27 +262,6 @@
       } else {
         return $(this).off(eventName);
       }
-    };
-
-    Route.prototype.assemble = function() {
-      var i, str, value, values;
-      values = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
-      if (this.pattern instanceof RegExp) {
-        throw 'Assembling routes that are based on a regular expression is not supported.';
-      }
-      if (values.length > 0 && $.isArray(values[0])) values = values[0];
-      str = this.pattern;
-      i = 0;
-      while (this.firstParam.test(str)) {
-        if (values[i] != null) {
-          value = $.isFunction(values[i]) ? values[i]() : String(values[i]);
-        } else {
-          value = '';
-        }
-        str = str.replace(this.firstParam, value);
-        i++;
-      }
-      return str;
     };
 
     shortcut = function(method) {

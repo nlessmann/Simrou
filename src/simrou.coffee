@@ -180,7 +180,31 @@ class Route
     # Returns an array if this route matches the specified hash (false otherwise).
     match: (hash) ->
         matches = @expr.exec(hash)
-        if $.isArray(matches) then false else matches.slice(1)
+        if $.isArray(matches) then matches.slice(1) else false
+    
+    # Assembles a concrete url out of this route.
+    assemble: (values...) ->
+        # Cannot assemble a route if it's based on a regular expression
+        if @pattern instanceof RegExp
+            throw 'Assembling routes that are based on a regular expression is not supported.'
+        
+        if values.length > 0 and $.isArray(values[0])
+            values = values[0]
+        
+        str = @pattern
+        i = 0
+        
+        while @firstParam.test(str)
+            # Get the right replacement
+            if values[i]?
+                value = if $.isFunction(values[i]) then values[i]() else String(values[i])
+            else
+                value = ''
+            
+            str = str.replace(@firstParam, value)
+            i++
+        
+        str
     
     # Returns the regular expression that describes this route.
     getRegExp: ->
@@ -228,30 +252,6 @@ class Route
             $(@).off(eventName, action)
         else
             $(@).off(eventName)
-    
-    # Assembles a concrete url out of this route.
-    assemble: (values...) ->
-        # Cannot assemble a route if it's based on a regular expression
-        if @pattern instanceof RegExp
-            throw 'Assembling routes that are based on a regular expression is not supported.'
-        
-        if values.length > 0 and $.isArray(values[0])
-            values = values[0]
-        
-        str = @pattern
-        i = 0
-        
-        while @firstParam.test(str)
-            # Get the right replacement
-            if values[i]?
-                value = if $.isFunction(values[i]) then values[i]() else String(values[i])
-            else
-                value = ''
-            
-            str = str.replace(@firstParam, value)
-            i++
-        
-        str
     
     shortcut = (method) ->
         (action) -> @attachAction(method, action)
