@@ -1,5 +1,5 @@
 ###*
-* @preserve Simrou v1.3.1 - Released under the MIT License.
+* @preserve Simrou v1.3.2 - Released under the MIT License.
 * Copyright (c) 2012 büro für ideen, www.buero-fuer-ideen.de
 ###
 

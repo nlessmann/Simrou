@@ -1,6 +1,6 @@
 
 /**
-* @preserve Simrou v1.3.0 - Released under the MIT License.
+* @preserve Simrou v1.3.2 - Released under the MIT License.
 * Copyright (c) 2012 büro für ideen, www.buero-fuer-ideen.de
 */
 
@@ -11,6 +11,10 @@
     __slice = Array.prototype.slice;
 
   Simrou = (function() {
+
+    Simrou.prototype.RegExpCache = {
+      extractHash: /^[^#]*#+(.*)$/
+    };
 
     Simrou.prototype.eventSupported = (function() {
       var docMode;
@@ -93,7 +97,7 @@
 
     Simrou.prototype.getHash = function(url) {
       if (url == null) url = location.hash;
-      return url.replace(/^[^#]*#+(.*)$/, '$1');
+      return url.replace(this.RegExpCache.extractHash, '$1');
     };
 
     Simrou.prototype.resolveHash = function(event) {
@@ -151,13 +155,12 @@
   Route = (function() {
     var shortcut;
 
-    Route.prototype.escapeRegExp = /[-[\]{}()+?.,\\^$|#\s]/g;
-
-    Route.prototype.namedParam = /:\w+/g;
-
-    Route.prototype.splatParam = /\*\w*/g;
-
-    Route.prototype.firstParam = /(:\w+)|(\*\w*)/;
+    Route.prototype.RegExpCache = {
+      escapeRegExp: /[-[\]{}()+?.,\\^$|#\s]/g,
+      namedParam: /:\w+/g,
+      splatParam: /\*\w*/g,
+      firstParam: /(:\w+)|(\*\w*)/
+    };
 
     function Route(pattern) {
       this.pattern = pattern;
@@ -166,9 +169,9 @@
       } else {
         if (pattern != null) {
           pattern = String(pattern);
-          pattern = pattern.replace(this.escapeRegExp, '\\$&');
-          pattern = pattern.replace(this.namedParam, '([^\/]+)');
-          pattern = pattern.replace(this.splatParam, '(.*?)');
+          pattern = pattern.replace(this.RegExpCache.escapeRegExp, '\\$&');
+          pattern = pattern.replace(this.RegExpCache.namedParam, '([^\/]+)');
+          pattern = pattern.replace(this.RegExpCache.splatParam, '(.*?)');
           this.expr = new RegExp('^' + pattern + '$');
         } else {
           this.expr = /^.+$/;
@@ -195,13 +198,13 @@
       if (values.length > 0 && $.isArray(values[0])) values = values[0];
       str = this.pattern;
       i = 0;
-      while (this.firstParam.test(str)) {
+      while (this.RegExpCache.firstParam.test(str)) {
         if (values[i] != null) {
           value = $.isFunction(values[i]) ? values[i]() : String(values[i]);
         } else {
           value = '';
         }
-        str = str.replace(this.firstParam, value);
+        str = str.replace(this.RegExpCache.firstParam, value);
         i++;
       }
       return str;
