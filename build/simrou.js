@@ -71,14 +71,14 @@
 
     Simrou.prototype.navigate = function(hash) {
       var isChange;
-      isChange = location.hash !== hash;
+      isChange = this.getHash() !== this.getHash(hash);
       location.hash = hash;
       if (!this.observingHash || !isChange) return this.resolve(hash, 'get');
     };
 
     Simrou.prototype.resolve = function(hash, method) {
       var $route, args, name, route, _ref;
-      if (hash == null) return false;
+      if (hash != null) return false;
       _ref = this.routes;
       for (name in _ref) {
         if (!__hasProp.call(_ref, name)) continue;
