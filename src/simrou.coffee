@@ -202,7 +202,7 @@ class Route
         while @RegExpCache.firstParam.test(str)
             # Get the right replacement
             if values[i]?
-                value = if $.isFunction(values[i]) then values[i]() else String(values[i])
+                value = if $.isFunction(values[i]) then values[i].call(@) else values[i]
             else
                 value = ''
             
