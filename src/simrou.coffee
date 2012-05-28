@@ -4,6 +4,11 @@
 ###
 
 class Simrou
+    # Cache regular expressions
+    RegExpCache:
+        extractHash: /^[^#]*#+(.*)$/
+    
+    # Does the user's browser natively support the onHashChange event? 
     eventSupported: do ->
         docMode = window.document.documentMode
         'onhashchange' of window and (not docMode? or docMode > 7)
@@ -87,7 +92,7 @@ class Simrou
     # Return the current value for window.location.hash without any
     # leading hash keys (does not remove leading slashes!).
     getHash: (url = location.hash) ->
-        url.replace(/^[^#]*#+(.*)$/, '$1')
+        url.replace(@RegExpCache.extractHash, '$1')
     
     # Takes whatever window.location.hash currently is and tries
     # to resolves that hash.
@@ -156,10 +161,11 @@ class Simrou
 class Route
     
     # Cache some static regular expressions - thanks Backbone.js!
-    escapeRegExp: /[-[\]{}()+?.,\\^$|#\s]/g
-    namedParam: /:\w+/g
-    splatParam: /\*\w*/g
-    firstParam: /(:\w+)|(\*\w*)/
+    RegExpCache:
+        escapeRegExp: /[-[\]{}()+?.,\\^$|#\s]/g
+        namedParam: /:\w+/g
+        splatParam: /\*\w*/g
+        firstParam: /(:\w+)|(\*\w*)/
     
     constructor: (@pattern) ->
         if pattern instanceof RegExp
@@ -169,9 +175,9 @@ class Route
                 # Do some escaping and replace the parameter placeholders
                 # with the proper regular expression
                 pattern = String(pattern)
-                pattern = pattern.replace(@escapeRegExp, '\\$&')
-                pattern = pattern.replace(@namedParam, '([^\/]+)')
-                pattern = pattern.replace(@splatParam, '(.*?)')
+                pattern = pattern.replace(@RegExpCache.escapeRegExp, '\\$&')
+                pattern = pattern.replace(@RegExpCache.namedParam, '([^\/]+)')
+                pattern = pattern.replace(@RegExpCache.splatParam, '(.*?)')
                 
                 @expr = new RegExp('^' + pattern + '$')
             else
@@ -194,14 +200,14 @@ class Route
         str = @pattern
         i = 0
         
-        while @firstParam.test(str)
+        while @RegExpCache.firstParam.test(str)
             # Get the right replacement
             if values[i]?
                 value = if $.isFunction(values[i]) then values[i]() else String(values[i])
             else
                 value = ''
             
-            str = str.replace(@firstParam, value)
+            str = str.replace(@RegExpCache.firstParam, value)
             i++
         
         str
