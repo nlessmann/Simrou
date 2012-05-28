@@ -65,7 +65,7 @@ class Simrou
         
     # Resolves a hash. Method is optional, returns true if matching route found.
     resolve: (hash, method) ->
-        return false unless hash?
+        if hash? then return false
         
         # Iterate over all registerd routes
         for own name, route of @routes
