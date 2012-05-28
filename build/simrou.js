@@ -110,7 +110,7 @@
     Simrou.prototype.handleFormSubmit = function(event) {
       var $form, action, method;
       $form = $(event.target);
-      method = $form.attr('method') || $form.get(0).getAttribute('method') || 'get';
+      method = $form.attr('method') || $form.get(0).getAttribute('method');
       action = $form.attr('action');
       if (this.resolve(action, method)) event.preventDefault();
       return true;
@@ -168,8 +168,7 @@
         this.expr = pattern;
       } else {
         if (pattern != null) {
-          pattern = String(pattern);
-          pattern = pattern.replace(this.RegExpCache.escapeRegExp, '\\$&');
+          pattern = String(pattern).replace(this.RegExpCache.escapeRegExp, '\\$&');
           pattern = pattern.replace(this.RegExpCache.namedParam, '([^\/]+)');
           pattern = pattern.replace(this.RegExpCache.splatParam, '(.*?)');
           this.expr = new RegExp('^' + pattern + '$');
@@ -200,7 +199,7 @@
       i = 0;
       while (this.RegExpCache.firstParam.test(str)) {
         if (values[i] != null) {
-          value = $.isFunction(values[i]) ? values[i]() : String(values[i]);
+          value = $.isFunction(values[i]) ? values[i].call(this) : values[i];
         } else {
           value = '';
         }
