@@ -57,7 +57,7 @@ class Simrou
         
     # Changes window.location.hash to the specified hash.
     navigate: (hash) ->
-        isChange = (location.hash isnt hash)
+        isChange = (@getHash() isnt @getHash(hash))
         location.hash = hash
         
         if not @observingHash or not isChange
