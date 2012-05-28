@@ -106,7 +106,7 @@
     Simrou.prototype.handleFormSubmit = function(event) {
       var $form, action, method;
       $form = $(event.target);
-      method = String($form.attr('method')) || 'get';
+      method = $form.attr('method') || $form.get(0).getAttribute('method') || 'get';
       action = $form.attr('action');
       if (this.resolve(action, method)) event.preventDefault();
       return true;

@@ -101,7 +101,7 @@ class Simrou
     handleFormSubmit: (event) =>
         $form = $(event.target)
         
-        method = String($form.attr('method')) or 'get'
+        method = $form.attr('method') or $form.get(0).getAttribute('method') or 'get'
         action = $form.attr('action')
         
         if @resolve(action, method)
