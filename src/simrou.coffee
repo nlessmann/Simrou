@@ -188,20 +188,15 @@ class Route
         if values.length > 0 and $.isArray(values[0])
             values = values[0]
         
-        str = @pattern
-        i = 0
-        
+        url = @pattern
         while @RegExpCache.firstParam.test(str)
             # Get the right replacement
-            if values[i]?
-                value = if $.isFunction(values[i]) then values[i].call(@) else values[i]
-            else
-                value = ''
+            value = if values.length > 0 then values.shift() else ''
+            if $.isFunction(value) then value = value.call(@)
             
-            str = str.replace(@RegExpCache.firstParam, value)
-            i++
+            url = url.replace(@RegExpCache.firstParam, value)
         
-        str
+        url
     
     # Returns the regular expression that describes this route.
     getRegExp: ->
@@ -232,9 +227,7 @@ class Route
         # Attach the actions
         for own method, list of actions
             list = [list] unless $.isArray(list)
-            
-            for action in list
-                @attachAction(method, action)
+            @attachAction(method, action) for action in list
     
     # Works just like attachAction, but instead detaches the action
     # handler from the route.
