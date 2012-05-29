@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Simrou Corp</title>
+        
+        <script type="text/javascript" src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
+        <script type="text/javascript" src="../build/simrou.js"></script>
+        
+        <!--[if lte IE 7]>
+        <script type="text/javascript" src="http://github.com/cowboy/jquery-hashchange/raw/v1.3/jquery.ba-hashchange.min.js"></script>
+        <![endif]-->
+        
+        <style type="text/css">
+        * {
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: Garamond, serif;
+            font-size: 14px;
+            background: #063e7b;
+            color: #063e7b;
+        }
+        
+        p {
+            text-align: center;
+            margin-top: 1em;
+        }
+        
+        #wrapper {
+            position: relative;
+            width: 640px;
+            margin: 60px auto 0 auto;
+            padding: 20px 24px 0 24px;
+            background: #f4f4f4;
+        }
+        
+        .view {
+            position: absolute;
+            left: 0;
+            right: 0;
+            padding: 36px 20px;
+            background: #f4f4f4;
+            border-bottom: 32px solid #063e7b;
+        }
+        
+        h1 {
+            font-family: Garamond;
+            font-size: 32px;
+            font-weight: normal;
+            text-align: left;
+            padding-bottom: 6px;
+            border-bottom: 1px solid #063e7b;
+        }
+        
+        h1 a {
+            color: #063e7b;
+            text-decoration: none;
+        }
+        
+        h1 a:hover {
+            text-decoration: underline;
+        }
+        
+        #nav {
+            list-style: none;
+            position: absolute;
+            top: 26px;
+            right: 34px;
+        }
+        
+        #nav li {
+            display: inline-block;
+            margin-left: 8px;
+        }
+        
+        #nav li a {
+            display: inline-block;
+            background: #063e7b;
+            padding: 2px 14px;
+            margin-left: 2px;
+            border: 1px solid #063e7b;
+            font-size: 18px;
+            color: white;
+            text-decoration: none;
+        }
+        
+        #nav li:hover a {
+            background: none;
+            color: #063e7b;
+        }
+        
+        h2 {
+            font-size: 28px;
+            text-align: center;
+            font-weight: bold;
+        }
+        
+        #nextSlogan {
+            text-align: right;
+            padding-top: 16px;
+            width: 400px;
+            margin: 0 auto;
+        }
+        
+        label {
+            display: block;
+            width: 324px;
+            margin: 0 auto;
+            padding-bottom: 4px;
+            text-align: left;
+        }
+        
+        input, textarea {
+            font-size: 18px;
+            padding: 2px;
+            width: 320px;
+        }
+        
+        .buttons {
+            width: 324px;
+            text-align: right;
+            margin: 16px auto 0 auto;
+        }
+        </style>
+        
+        <script type="text/javascript">
+        var App = new function() {
+            
+            var router, routes,
+                $views, $currentView,
+                $slogans, currentSlogan;
+            
+            this.init = function() {
+                // Cache the view panels
+                $views = $('.view').hide();
+                
+                // Init the router
+                router = new Simrou(initRouter);
+                router.start(routes.homepage);
+            };
+            
+            /* Initializes the router, i.e. add routes and actions handlers. */
+            var initRouter = function(router) {
+                routes = {};
+                
+                routes.homepage = router.addRoute('/homepage');
+                routes.homepage.get(showHomepage);
+                
+                routes.slogans = router.addRoute('/slogans/:id');
+                routes.slogans.get(showSlogan);
+                
+                routes.contact = router.addRoute('/contact');
+                routes.contact.get(showContactForm);
+                routes.contact.post(submitContactForm);
+            };
+            
+            /* Hides the currently visible view and reports when done. */
+            var hideCurrentView = function(name, callback) {
+                if ($currentView && (!name || $currentView.attr('id') != name)) {
+                    $currentView.slideUp(callback);
+                } else {
+                    callback();
+                }
+            };
+            
+            /* Reveals the specified view and reports when done. */
+            var showView = function(name, callback) {
+                $currentView = $views.filter('#' + name).slideDown(callback);
+            };
+            
+            /* Hides the current view, then shows the specified one. */
+            var switchView = function(name, inBetweenCallback) {
+                hideCurrentView(name, function() {
+                    if ($.isFunction(inBetweenCallback)) {
+                        inBetweenCallback();
+                    }
+                    showView(name);
+                });
+            };
+            
+            /* Action => Shows the homepage view. */
+            var showHomepage = function() {
+                switchView('homepage');
+            };
+            
+            /* Action => Shows the slogan with ID "id" */
+            var showSlogan = function(e, m, id) {
+                // Cache the slogans if cache is still empty
+                if (!$slogans) {
+                    $slogans = $('#slogans h2');
+                    
+                    // Enable button that switches to the next slogan
+                    $('#nextSlogan button').on('click', function() {
+                        // Determine the next slogan's ID
+                        nextSlogan = currentSlogan + 1;
+                        if (nextSlogan > $slogans.length) {
+                            nextSlogan = 1;
+                        }
+                        
+                        // Redirect the user
+                        router.navigate( routes.slogans.assemble(nextSlogan) );
+                    });
+                }
+                
+                // Validate ID of the requested slogan
+                id = Math.max(1, parseInt(id) || 1);
+                if (id > $slogans.length) {
+                    id = 1;
+                }
+                
+                // Hide old slogan, display new one
+                switchView('slogans', function() {
+                    currentSlogan = id;
+                    $slogans.hide().eq(id - 1).show();
+                });
+            };
+            
+            /* Action => Shows the contact form. */
+            var showContactForm = function() {
+                switchView('contact', function() {
+                    // Clear form before showing it (again?)
+                    $('#contact').find('input,textarea,button').val('').prop('disabled', false);
+                });
+            };
+            
+            /* Action => Submits the contact form. */
+            var submitContactForm = function() {
+                // Disable form elements
+                $('#contact').find('input,textarea,button').prop('disabled', true);
+                
+                /* ... process and submit entered data ... */
+                
+                // Display success message
+                setTimeout(function() {
+                    switchView('contact_success');
+                }, 1000);
+            };
+            
+        };
+        
+        $(App.init);
+        </script>
+    </head>
+    
+    <body>
+    
+        <div id="wrapper">
+            
+            <h1><a href="#/homepage">Simrou Corporation</a></h1>
+            
+            <ul id="nav">
+                <li><a href="#/slogans/1">Slogans</a></li>
+                <li><a href="#/contact">Contact</a></li>
+            </ul>
+            
+            <div id="homepage" class="view">
+                <h2>Welcome to our Website!</h2>
+            </div>
+            
+            <div id="slogans" class="view">
+                <h2>We build the world!</h2>
+                <h2>We design ... things!</h2>
+                <h2>We are 100% awesome!</h2>
+                
+                <div id="nextSlogan">
+                    <button type="button">&raquo;</button>
+                </div>
+            </div>
+            
+            <div id="contact" class="view">
+                <h2>Please drop us a line!</h2>
+                
+                <form action="#/contact" method="post">
+                    <p>
+                        <label>Your name:</label>
+                        <input type="text">
+                    </p>
+                    
+                    <p>
+                        <label>Your email:</label>
+                        <input type="email">
+                    </p>
+                    
+                    <p>
+                        <label>Message:</label>
+                        <textarea rows="5"></textarea>
+                    </p>
+                                            
+                    <div class="buttons">
+                        <button type="submit">Send message</button>
+                    </div>
+                </form>
+            </div>
+            
+            <div id="contact_success" class="view">
+                <h2>Thank you, we will get back to you soon!</h2>
+                
+                <p><a href="#/homepage">Return to the homepage</a></p>
+            </div>
+            
+        </div>
+        
+    </body>
+</html>

@@ -2,7 +2,7 @@
 <html>
     <head>
         <meta charset="UTF-8">
-        <title>Simrou Demo</title>
+        <title>Simrou Demo - Overview</title>
         
         <script type="text/javascript" src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
         <script type="text/javascript" src="../build/simrou.min.js"></script>
@@ -15,8 +15,6 @@
         $(function() {
             // Create a new Simrou instance
             var router = new Simrou();
-            
-            // - - - - -
             
             // Register a route that matches all articles
             var articles = router.addRoute('/articles/:id');
@@ -31,22 +29,16 @@
                 alert('Article - via PUT!');
             });
             
-            // - - - - -
-            
             // Register a second route (for the homepage) and specify an action handler
             // for GET requests right away by using the optional second parameter:
             router.addRoute('/homepage', function(e, method) {
                 alert('Homepage called, using HTTP method => ' + method);
             });
             
-            // - - - - -
-            
             // Register a route with a wildcard in it:
             router.addRoute('/portfolio/:section/*').get(function(e, method, section, path) {
                 alert(section + ' ### ' + path);
             });
-            
-            // - - - - -
             
             // Bulk register routes and action handlers
             router.addRoutes({
@@ -60,17 +52,13 @@
                 '/yet/another/route': function() { alert('3'); }
             });
             
-            // - - - - -
-            
             // Start the routing with the homepage as a default route...
             router.start('/homepage');
             
-            // - - - - -
-            
-            $('#test').click(function() {
-                // Navigate to an article
+            // Navigate to an article when the button gets clicked
+            $('#test').click(function(e) {
                 router.navigate('/articles/172');
-                return false;
+                e.preventDefault();
             });
         });
         </script>

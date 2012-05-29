@@ -2,7 +2,7 @@
 <html>
     <head>
         <meta charset="UTF-8">
-        <title>Simrou Demo</title>
+        <title>Simrou Demo - CoffeeScript</title>
         
         <script type="text/javascript" src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
         <script type="text/javascript" src="http://coffeescript.org/extras/coffee-script.js"></script>
@@ -13,25 +13,25 @@
         <![endif]-->
         
         <script type="text/coffeescript">
-        # Create a new Simrou instance
-        router = new Simrou
-        
-        # Register a route
-        articlesRoute = router.addRoute '/articles/:id'
-        
-        # Attach an action handler for GET requests to this route
-        articlesRoute.get (event, method, id) ->
-            alert 'Article ID: ' + id
-        
-        # The same works for other HTTP methods, like PUT (makes sense for HTML forms)
-        articlesRoute.put ->
-            alert 'Article route matched via HTTP method = PUT'
-        
-        # Now lets register a route for the homepage
-        router.addRoute '/homepage', (event, method) ->
-            alert 'Homepage route matched via HTTP method = ' + method
-        
         $ ->
+            # Create a new Simrou instance
+            router = new Simrou
+            
+            # Register a route
+            articlesRoute = router.addRoute '/articles/:id'
+            
+            # Attach an action handler for GET requests to this route
+            articlesRoute.get (event, method, id) ->
+                alert 'Article ID: ' + id
+            
+            # The same works for other HTTP methods, like PUT (makes sense for HTML forms)
+            articlesRoute.put (event, method, id) ->
+                alert 'Article route (ID: ' + id + ') matched via HTTP method = PUT'
+            
+            # Now lets register a route for the homepage
+            router.addRoute '/homepage', (event, method) ->
+                alert 'Homepage route matched via HTTP method = ' + method
+            
             # Get the router running!
             router.start '/homepage'
             
