@@ -95,7 +95,7 @@ class Simrou
         url.replace(@RegExpCache.extractHash, '$1')
     
     # Takes whatever window.location.hash currently is and tries
-    # to resolves that hash.
+    # to resolve that hash.
     resolveHash: (event) =>
         url = event.originalEvent.newURL if @eventSupported
         hash = @getHash(url)
@@ -117,11 +117,6 @@ class Simrou
     # Starts the routing process - binds the Simrou instance to several
     # events and navigates to the specified initial hash, if window.
     # location.hash is empty.
-    # - initialHash is optional
-    # - If observeHash is false, the event handler for onHashChange is
-    #   NOT registered. Useful if you want to use any other plugin/method
-    #   to handle/observe hash changes.
-    # - The same applies to the "observeForms" parameter.
     start: (initialHash, observeHash = true, observeForms = true) ->
         # Register event handler for the onHashChange event
         if observeHash
@@ -146,7 +141,7 @@ class Simrou
             else
                 @navigate(initialHash)            
     
-    # Stopps the routing process - all event handlers registered by this
+    # Stops the routing process - all event handlers registered by this
     # Simrou instance get unbind.
     stop: ->
         # Stop observing hash changes
@@ -167,20 +162,17 @@ class Route
         splatParam: /\*\w*/g
         firstParam: /(:\w+)|(\*\w*)/
     
-    constructor: (@pattern) ->
-        if pattern instanceof RegExp
-            @expr = pattern
+    constructor: (@pattern = /^.+$/) ->
+        if @pattern instanceof RegExp
+            @expr = @pattern
         else
-            if pattern?
-                # Do some escaping and replace the parameter placeholders
-                # with the proper regular expression
-                pattern = String(pattern).replace(@RegExpCache.escapeRegExp, '\\$&')
-                pattern = pattern.replace(@RegExpCache.namedParam, '([^\/]+)')
-                pattern = pattern.replace(@RegExpCache.splatParam, '(.*?)')
-                
-                @expr = new RegExp('^' + pattern + '$')
-            else
-                @expr = /^.+$/
+            # Do some escaping and replace the parameter placeholders
+            # with the proper regular expression
+            pattern = String(@pattern).replace(@RegExpCache.escapeRegExp, '\\$&')
+            pattern = pattern.replace(@RegExpCache.namedParam, '([^\/]+)')
+            pattern = pattern.replace(@RegExpCache.splatParam, '(.*?)')
+            
+            @expr = new RegExp('^' + pattern + '$')
     
     # Returns an array if this route matches the specified hash (false otherwise).
     match: (hash) ->
