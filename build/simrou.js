@@ -45,7 +45,9 @@
 
     Simrou.prototype.addRoutes = function(routes) {
       var list, pattern, route, _i, _len;
-      if ($.isArray(routes)) {
+      if ($.isFunction(routes)) {
+        list = routes(this);
+      } else if ($.isArray(routes)) {
         list = [];
         for (_i = 0, _len = routes.length; _i < _len; _i++) {
           route = routes[_i];
@@ -78,7 +80,7 @@
 
     Simrou.prototype.resolve = function(hash, method) {
       var $route, args, name, route, _ref;
-      if (hash != null) return false;
+      if (!(hash != null)) return false;
       _ref = this.routes;
       for (name in _ref) {
         if (!__hasProp.call(_ref, name)) continue;
@@ -111,7 +113,7 @@
       var $form, action, method;
       $form = $(event.target);
       method = $form.attr('method') || $form.get(0).getAttribute('method');
-      action = $form.attr('action');
+      action = this.getHash($form.attr('action'));
       if (this.resolve(action, method)) event.preventDefault();
       return true;
     };
@@ -132,6 +134,7 @@
       if (hash !== '') {
         return this.resolve(hash, 'get');
       } else if (initialHash != null) {
+        if (initialHash instanceof Route) initialHash = initialHash.assemble();
         if ((window.history != null) && (window.history.replaceState != null)) {
           window.history.replaceState({}, document.title, '#' + initialHash.replace(/^#+/, ''));
           return this.resolve(initialHash, 'get');
@@ -192,10 +195,10 @@
       }
       if (values.length > 0 && $.isArray(values[0])) values = values[0];
       url = this.pattern;
-      while (this.RegExpCache.firstParam.test(str)) {
+      while (this.RegExpCache.firstParam.test(url)) {
         value = values.length > 0 ? values.shift() : '';
-        if ($.isFunction(value)) value = value.call(this);
-        url = url.replace(this.RegExpCache.firstParam, value);
+        if ($.isFunction(value)) value = value(this);
+        url = url.replace(this.RegExpCache.firstParam, String(value));
       }
       return url;
     };

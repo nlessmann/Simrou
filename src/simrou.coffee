@@ -37,7 +37,9 @@ class Simrou
     
     # Allows to bulk register routes.
     addRoutes: (routes) ->
-        if $.isArray(routes)
+        if $.isFunction(routes)
+            list = routes(@)
+        else if $.isArray(routes)
             list = []
             for route in routes
                 list.push( @addRoute(route) )
@@ -65,7 +67,7 @@ class Simrou
         
     # Resolves a hash. Method is optional, returns true if matching route found.
     resolve: (hash, method) ->
-        if hash? then return false
+        if not hash? then return false
         
         # Iterate over all registerd routes
         for own name, route of @routes
@@ -107,11 +109,9 @@ class Simrou
         $form = $(event.target)
         
         method = $form.attr('method') or $form.get(0).getAttribute('method')
-        action = $form.attr('action')
+        action = @getHash( $form.attr('action') )
         
-        if @resolve(action, method)
-            event.preventDefault()
-        
+        event.preventDefault() if @resolve(action, method)
         true
     
     # Starts the routing process - binds the Simrou instance to several
@@ -133,6 +133,11 @@ class Simrou
         if hash isnt ''
             @resolve(hash, 'get')
         else if initialHash?
+            # Did the user pass a route object instead of a string?
+            # @todo Add test for this!
+            if initialHash instanceof Route
+                initialHash = initialHash.assemble()
+            
             if window.history? and window.history.replaceState?
                 # Fixes a safari bug where the initial hash is not pushed to the history
                 # when altering location.hash while the page is still loading.
@@ -189,12 +194,16 @@ class Route
             values = values[0]
         
         url = @pattern
-        while @RegExpCache.firstParam.test(str)
+        
+        while @RegExpCache.firstParam.test(url)
             # Get the right replacement
             value = if values.length > 0 then values.shift() else ''
-            if $.isFunction(value) then value = value.call(@)
             
-            url = url.replace(@RegExpCache.firstParam, value)
+            if $.isFunction(value)
+                value = value(@)
+            
+            # Replace (again) the first still present parameter
+            url = url.replace(@RegExpCache.firstParam, String(value))
         
         url
     
@@ -252,5 +261,5 @@ class Route
     delete: shortcut 'delete'
 
 
-# Export the main class to the global namespace
+# Export Simrou to the global namespace
 window.Simrou = Simrou
