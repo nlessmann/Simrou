@@ -134,7 +134,6 @@
       if (hash !== '') {
         return this.resolve(hash, 'get');
       } else if (initialHash != null) {
-        if (initialHash instanceof Route) initialHash = initialHash.assemble();
         if ((window.history != null) && (window.history.replaceState != null)) {
           window.history.replaceState({}, document.title, '#' + initialHash.replace(/^#+/, ''));
           return this.resolve(initialHash, 'get');

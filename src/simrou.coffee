@@ -133,11 +133,6 @@ class Simrou
         if hash isnt ''
             @resolve(hash, 'get')
         else if initialHash?
-            # Did the user pass a route object instead of a string?
-            # @todo Add test for this!
-            if initialHash instanceof Route
-                initialHash = initialHash.assemble()
-            
             if window.history? and window.history.replaceState?
                 # Fixes a safari bug where the initial hash is not pushed to the history
                 # when altering location.hash while the page is still loading.

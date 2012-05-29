@@ -83,18 +83,24 @@
         
         #nav li a {
             display: inline-block;
-            background: #063e7b;
             padding: 2px 14px;
             margin-left: 2px;
             border: 1px solid #063e7b;
             font-size: 18px;
-            color: white;
             text-decoration: none;
-        }
-        
-        #nav li:hover a {
             background: none;
             color: #063e7b;
+        }
+        
+        #nav li a:hover,
+        #nav li.active a {
+            background: #063e7b;
+            color: white;
+            
+        }
+        
+        #nav li.active a:hover {
+            cursor: default;
         }
         
         h2 {
@@ -138,7 +144,8 @@
             
             var router, routes,
                 $views, $currentView,
-                $slogans, currentSlogan;
+                $slogans, currentSlogan,
+                $activeNavBtn;
             
             this.init = function() {
                 // Cache the view panels
@@ -146,7 +153,7 @@
                 
                 // Init the router
                 router = new Simrou(initRouter);
-                router.start(routes.homepage);
+                router.start( routes.homepage.assemble() );
             };
             
             /* Initializes the router, i.e. add routes and actions handlers. */
@@ -191,9 +198,26 @@
                 });
             };
             
+            /* Updates the selected button from the main menu. */
+            var switchNavBtn = function(name) {
+                if ($activeNavBtn) {
+                    $activeNavBtn.removeClass('active');
+                    
+                    if (name && name == $activeNavBtn.attr('id')) {
+                        $activeNavBtn = null;
+                        return false;
+                    }
+                }
+                
+                if (name) {
+                    $activeNavBtn = $('#' + name).addClass('active');
+                }
+            };
+            
             /* Action => Shows the homepage view. */
             var showHomepage = function() {
                 switchView('homepage');
+                switchNavBtn();
             };
             
             /* Action => Shows the slogan with ID "id" */
@@ -221,6 +245,9 @@
                     id = 1;
                 }
                 
+                // Update menu button
+                switchNavBtn('nbSlogans');
+                
                 // Hide old slogan, display new one
                 switchView('slogans', function() {
                     currentSlogan = id;
@@ -233,6 +260,8 @@
                 switchView('contact', function() {
                     // Clear form before showing it (again?)
                     $('#contact').find('input,textarea,button').val('').prop('disabled', false);
+                    
+                    switchNavBtn('nbContact');
                 });
             };
             
@@ -252,6 +281,7 @@
             /* 404 page */
             var showNotFoundMessage = function() {
                 switchView('notfound');
+                switchNavBtn();
             };
             
         };
@@ -267,8 +297,8 @@
             <h1><a href="#/homepage">Simrou Corporation</a></h1>
             
             <ul id="nav">
-                <li><a href="#/slogans/1">Slogans</a></li>
-                <li><a href="#/contact">Contact</a></li>
+                <li id="nbSlogans"><a href="#/slogans/1">Slogans</a></li>
+                <li id="nbContact"><a href="#/contact">Contact</a></li>
             </ul>
             
             <div id="homepage" class="view">
