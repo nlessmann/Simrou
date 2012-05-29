@@ -163,18 +163,14 @@
     };
 
     function Route(pattern) {
-      this.pattern = pattern;
-      if (pattern instanceof RegExp) {
-        this.expr = pattern;
+      this.pattern = pattern != null ? pattern : /^.+$/;
+      if (this.pattern instanceof RegExp) {
+        this.expr = this.pattern;
       } else {
-        if (pattern != null) {
-          pattern = String(pattern).replace(this.RegExpCache.escapeRegExp, '\\$&');
-          pattern = pattern.replace(this.RegExpCache.namedParam, '([^\/]+)');
-          pattern = pattern.replace(this.RegExpCache.splatParam, '(.*?)');
-          this.expr = new RegExp('^' + pattern + '$');
-        } else {
-          this.expr = /^.+$/;
-        }
+        pattern = String(this.pattern).replace(this.RegExpCache.escapeRegExp, '\\$&');
+        pattern = pattern.replace(this.RegExpCache.namedParam, '([^\/]+)');
+        pattern = pattern.replace(this.RegExpCache.splatParam, '(.*?)');
+        this.expr = new RegExp('^' + pattern + '$');
       }
     }
 
@@ -189,24 +185,19 @@
     };
 
     Route.prototype.assemble = function() {
-      var i, str, value, values;
+      var url, value, values;
       values = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
       if (this.pattern instanceof RegExp) {
         throw 'Assembling routes that are based on a regular expression is not supported.';
       }
       if (values.length > 0 && $.isArray(values[0])) values = values[0];
-      str = this.pattern;
-      i = 0;
+      url = this.pattern;
       while (this.RegExpCache.firstParam.test(str)) {
-        if (values[i] != null) {
-          value = $.isFunction(values[i]) ? values[i].call(this) : values[i];
-        } else {
-          value = '';
-        }
-        str = str.replace(this.RegExpCache.firstParam, value);
-        i++;
+        value = values.length > 0 ? values.shift() : '';
+        if ($.isFunction(value)) value = value.call(this);
+        url = url.replace(this.RegExpCache.firstParam, value);
       }
-      return str;
+      return url;
     };
 
     Route.prototype.getRegExp = function() {
