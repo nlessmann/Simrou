@@ -1,5 +1,5 @@
 ###*
-* @preserve Simrou v1.3.2 - Released under the MIT License.
+* @preserve Simrou v1.3.3 - Released under the MIT License.
 * Copyright (c) 2012 büro für ideen, www.buero-fuer-ideen.de
 ###
 
@@ -38,7 +38,7 @@ class Simrou
     # Allows to bulk register routes.
     addRoutes: (routes) ->
         if $.isFunction(routes)
-            list = routes(@)
+            list = routes.call(@)
         else if $.isArray(routes)
             list = []
             for route in routes
