@@ -6,7 +6,7 @@
 class Simrou
     # Cache regular expressions
     RegExpCache:
-        extractHash: /^[^#]*#+(.*)$/
+        extractHash: /^(?:[^#]*#+)?(.*?)\/*$/
     
     # Does the user's browser natively support the onHashChange event? 
     eventSupported: do ->

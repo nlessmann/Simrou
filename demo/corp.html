@@ -152,12 +152,13 @@
                 $views = $('.view').hide();
                 
                 // Init the router
-                router = new Simrou(initRouter);
+                initRouter();
                 router.start( routes.homepage.assemble() );
             };
             
             /* Initializes the router, i.e. add routes and actions handlers. */
-            var initRouter = function(router) {
+            var initRouter = function() {
+                router = new Simrou();
                 routes = {};
                 
                 routes.homepage = router.addRoute('/homepage');
@@ -201,12 +202,12 @@
             /* Updates the selected button from the main menu. */
             var switchNavBtn = function(name) {
                 if ($activeNavBtn) {
-                    $activeNavBtn.removeClass('active');
-                    
                     if (name && name == $activeNavBtn.attr('id')) {
-                        $activeNavBtn = null;
                         return false;
                     }
+                    
+                    $activeNavBtn.removeClass('active');
+                    $activeNavBtn = null;
                 }
                 
                 if (name) {
@@ -245,14 +246,14 @@
                     id = 1;
                 }
                 
-                // Update menu button
-                switchNavBtn('nbSlogans');
-                
                 // Hide old slogan, display new one
                 switchView('slogans', function() {
                     currentSlogan = id;
                     $slogans.hide().eq(id - 1).show();
                 });
+                
+                // Update menu button
+                switchNavBtn('nbSlogans');
             };
             
             /* Action => Shows the contact form. */

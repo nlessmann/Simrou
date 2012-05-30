@@ -1,6 +1,6 @@
 
 /**
-* @preserve Simrou v1.3.2 - Released under the MIT License.
+* @preserve Simrou v1.3.3 - Released under the MIT License.
 * Copyright (c) 2012 büro für ideen, www.buero-fuer-ideen.de
 */
 
@@ -13,7 +13,7 @@
   Simrou = (function() {
 
     Simrou.prototype.RegExpCache = {
-      extractHash: /^[^#]*#+(.*)$/
+      extractHash: /^(?:[^#]*#+)?(.*?)\/*$/
     };
 
     Simrou.prototype.eventSupported = (function() {
@@ -46,7 +46,7 @@
     Simrou.prototype.addRoutes = function(routes) {
       var list, pattern, route, _i, _len;
       if ($.isFunction(routes)) {
-        list = routes(this);
+        list = routes.call(this);
       } else if ($.isArray(routes)) {
         list = [];
         for (_i = 0, _len = routes.length; _i < _len; _i++) {
