@@ -1,6 +1,6 @@
 
 /**
-* @preserve Simrou v1.3.4 - Released under the MIT License.
+* @preserve Simrou v1.3.5 - Released under the MIT License.
 * Copyright (c) 2012 büro für ideen, www.buero-fuer-ideen.de
 */
 
@@ -82,15 +82,21 @@
     };
 
     Simrou.prototype.resolve = function(hash, method) {
-      var $route, args, name, route, _ref;
-      hash = hash.replace(this.RegExpCache.trimHash, '$1');
-      if (hash === '') return false;
+      var $route, args, cleanHash, name, route, _ref;
+      cleanHash = String(hash).replace(this.RegExpCache.trimHash, '$1');
+      if (cleanHash === '') {
+        if (hash.indexOf('/') === -1) {
+          return false;
+        } else {
+          cleanHash = '/';
+        }
+      }
       _ref = this.routes;
       for (name in _ref) {
         if (!__hasProp.call(_ref, name)) continue;
         route = _ref[name];
         if (!(route instanceof Route)) continue;
-        args = route.match(hash);
+        args = route.match(cleanHash);
         if (!args) continue;
         args.unshift(method);
         $route = $(route);
@@ -103,7 +109,7 @@
 
     Simrou.prototype.getHash = function(url) {
       if (url == null) url = location.hash;
-      return url.replace(this.RegExpCache.extractHash, '$1');
+      return String(url).replace(this.RegExpCache.extractHash, '$1');
     };
 
     Simrou.prototype.resolveHash = function(event) {
@@ -197,7 +203,7 @@
         throw 'Assembling routes that are based on a regular expression is not supported.';
       }
       if (values.length > 0 && $.isArray(values[0])) values = values[0];
-      url = this.pattern;
+      url = String(this.pattern);
       while (this.RegExpCache.firstParam.test(url)) {
         value = values.length > 0 ? values.shift() : '';
         if ($.isFunction(value)) value = value(this);
@@ -276,6 +282,8 @@
     Route.prototype.put = shortcut('put');
 
     Route.prototype["delete"] = shortcut('delete');
+
+    Route.prototype.any = shortcut('*');
 
     return Route;
 
