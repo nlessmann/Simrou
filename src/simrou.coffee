@@ -1,12 +1,13 @@
 ###*
-* @preserve Simrou v1.3.3 - Released under the MIT License.
+* @preserve Simrou v1.3.4 - Released under the MIT License.
 * Copyright (c) 2012 büro für ideen, www.buero-fuer-ideen.de
 ###
 
 class Simrou
     # Cache regular expressions
     RegExpCache:
-        extractHash: /^(?:[^#]*#+)?(.*?)\/*$/
+        extractHash: /^[^#]*(#.*)$/
+        trimHash: /^#*(.*?)\/*$/
     
     # Does the user's browser natively support the onHashChange event? 
     eventSupported: do ->
@@ -59,15 +60,18 @@ class Simrou
         
     # Changes window.location.hash to the specified hash.
     navigate: (hash) ->
-        isChange = (@getHash() isnt @getHash(hash))
+        previousHash = @getHash()
         location.hash = hash
         
-        if not @observingHash or not isChange
+        if not @observingHash or location.hash is previousHash
             @resolve(hash, 'get')
         
     # Resolves a hash. Method is optional, returns true if matching route found.
     resolve: (hash, method) ->
-        if not hash? then return false
+        # Strip unwanted characters from the hash
+        hash = hash.replace(@RegExpCache.trimHash, '$1');
+        if hash is ''
+            return false
         
         # Iterate over all registerd routes
         for own name, route of @routes
@@ -111,7 +115,9 @@ class Simrou
         method = $form.attr('method') or $form.get(0).getAttribute('method')
         action = @getHash( $form.attr('action') )
         
-        event.preventDefault() if @resolve(action, method)
+        if @resolve(action, method)
+            event.preventDefault()
+        
         true
     
     # Starts the routing process - binds the Simrou instance to several
