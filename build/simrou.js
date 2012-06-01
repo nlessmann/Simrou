@@ -1,6 +1,6 @@
 
 /**
-* @preserve Simrou v1.3.3 - Released under the MIT License.
+* @preserve Simrou v1.3.4 - Released under the MIT License.
 * Copyright (c) 2012 büro für ideen, www.buero-fuer-ideen.de
 */
 
@@ -13,7 +13,8 @@
   Simrou = (function() {
 
     Simrou.prototype.RegExpCache = {
-      extractHash: /^(?:[^#]*#+)?(.*?)\/*$/
+      extractHash: /^[^#]*(#.*)$/,
+      trimHash: /^#*(.*?)\/*$/
     };
 
     Simrou.prototype.eventSupported = (function() {
@@ -72,15 +73,18 @@
     };
 
     Simrou.prototype.navigate = function(hash) {
-      var isChange;
-      isChange = this.getHash() !== this.getHash(hash);
+      var previousHash;
+      previousHash = this.getHash();
       location.hash = hash;
-      if (!this.observingHash || !isChange) return this.resolve(hash, 'get');
+      if (!this.observingHash || location.hash === previousHash) {
+        return this.resolve(hash, 'get');
+      }
     };
 
     Simrou.prototype.resolve = function(hash, method) {
       var $route, args, name, route, _ref;
-      if (!(hash != null)) return false;
+      hash = hash.replace(this.RegExpCache.trimHash, '$1');
+      if (hash === '') return false;
       _ref = this.routes;
       for (name in _ref) {
         if (!__hasProp.call(_ref, name)) continue;
