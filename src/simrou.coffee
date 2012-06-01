@@ -258,4 +258,4 @@ class Route
     
 
 # Export Simrou to the global namespace
-window.Simrou = Simrou
+window.Simrou = $.Simrou = Simrou

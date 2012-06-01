@@ -274,6 +274,6 @@
 
   })();
 
-  window.Simrou = Simrou;
+  window.Simrou = $.Simrou = Simrou;
 
 }).call(this);

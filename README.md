@@ -23,7 +23,7 @@ $(function() {
     var editRoute = router.addRoute('/article/:id/edit');
     
     // Bind an action handler to that route
-    editRoute.get(function(eventObject, method, id) {
+    editRoute.get(function(event, method, id) {
         showEditForm(id);
     });
     
