@@ -109,7 +109,7 @@ test('Detaching action handlers', function() {
     };
     
     r.get(f);
-    r.detachAction('get', f);
+    r.detachAction(f, 'get');
     
     s.resolve('asf', 'get');
 });

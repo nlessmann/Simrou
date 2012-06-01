@@ -1,6 +1,6 @@
 
 /**
-* @preserve Simrou v1.3.5 - Released under the MIT License.
+* @preserve Simrou v1.4.0 - Released under the MIT License.
 * Copyright (c) 2012 büro für ideen, www.buero-fuer-ideen.de
 */
 
@@ -34,13 +34,7 @@
     Simrou.prototype.addRoute = function(pattern, actionHandler) {
       var route;
       route = pattern instanceof Route ? pattern : new Route(pattern);
-      if (actionHandler != null) {
-        if ($.isFunction(actionHandler)) {
-          route.attachAction(actionHandler);
-        } else {
-          route.attachActions(actionHandler);
-        }
-      }
+      if (actionHandler != null) route.attachActions(actionHandler);
       return this.routes[route.getRegExp().toString()] = route;
     };
 
@@ -100,8 +94,10 @@
         if (!args) continue;
         args.unshift(method);
         $route = $(route);
-        $route.trigger('simrou:*', args);
-        if (method != null) $route.trigger('simrou:' + method.toLowerCase(), args);
+        $route.trigger('simrou:any', args);
+        if ((method != null) && method !== 'any') {
+          $route.trigger('simrou:' + method.toLowerCase(), args);
+        }
         return true;
       }
       return false;
@@ -216,26 +212,17 @@
       return this.expr;
     };
 
-    Route.prototype.attachAction = function(method, action) {
-      if (!(action != null) && $.isFunction(method)) {
-        action = method;
-        method = '*';
-      }
+    Route.prototype.attachAction = function(action, method) {
+      if (method == null) method = 'any';
       return $(this).on('simrou:' + method.toLowerCase(), action);
     };
 
-    Route.prototype.attachActions = function(method, actions) {
-      var action, list, _results;
-      if ($.isArray(method)) {
-        actions = {
-          '*': method
-        };
-      } else if ($.isPlainObject(method)) {
-        actions = method;
-      } else {
-        actions = new function() {
-          return this[method] = actions;
-        };
+    Route.prototype.attachActions = function(actions, method) {
+      var action, list, tmp, _ref, _results;
+      if (method == null) method = 'any';
+      if (!$.isPlainObject(actions)) {
+        _ref = [{}, actions], actions = _ref[0], tmp = _ref[1];
+        actions[method] = tmp;
       }
       _results = [];
       for (method in actions) {
@@ -247,7 +234,7 @@
           _results2 = [];
           for (_i = 0, _len = list.length; _i < _len; _i++) {
             action = list[_i];
-            _results2.push(this.attachAction(method, action));
+            _results2.push(this.attachAction(action, method));
           }
           return _results2;
         }).call(this));
@@ -255,12 +242,10 @@
       return _results;
     };
 
-    Route.prototype.detachAction = function(method, action) {
+    Route.prototype.detachAction = function(action, method) {
       var eventName;
-      if (!(action != null) && $.isFunction(method)) {
-        action = method;
-        method = '*';
-      }
+      if (method == null) method = 'any';
+      if (typeof action === 'string') method = action;
       eventName = 'simrou:' + method.toLowerCase();
       if ($.isFunction(action)) {
         return $(this).off(eventName, action);
@@ -271,7 +256,7 @@
 
     shortcut = function(method) {
       return function(action) {
-        return this.attachAction(method, action);
+        return this.attachAction(action, method);
       };
     };
 
@@ -283,7 +268,7 @@
 
     Route.prototype["delete"] = shortcut('delete');
 
-    Route.prototype.any = shortcut('*');
+    Route.prototype.any = shortcut('any');
 
     return Route;
 

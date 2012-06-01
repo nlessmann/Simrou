@@ -1,5 +1,5 @@
 ###*
-* @preserve Simrou v1.4 - Released under the MIT License.
+* @preserve Simrou v1.4.0 - Released under the MIT License.
 * Copyright (c) 2012 büro für ideen, www.buero-fuer-ideen.de
 ###
 
@@ -29,10 +29,7 @@ class Simrou
         route = if pattern instanceof Route then pattern else new Route(pattern)
         
         if actionHandler?
-            if $.isFunction(actionHandler)
-                route.any(actionHandler)
-            else
-                route.any(actionHandler)
+            route.attachActions(actionHandler)
         
         @routes[ route.getRegExp().toString() ] = route
     
@@ -227,8 +224,9 @@ class Route
     # Allows to bulk attach action handlers.
     attachActions: (actions, method = 'any') ->
         # Homogenize argument
-        if typeof actions isnt 'object'
-            actions = new -> @[method] = actions
+        unless $.isPlainObject(actions)
+            [actions, tmp] = [{}, actions]
+            actions[method] = tmp
         
         # Attach the actions
         for own method, list of actions
@@ -251,12 +249,12 @@ class Route
     shortcut = (method) ->
         (action) -> @attachAction(action, method)
     
-    get: shortcut 'get'
-    post: shortcut 'post'
-    put: shortcut 'put'
-    delete: shortcut 'delete'
-    any: shortcut 'any'
-
+    get: shortcut('get')
+    post: shortcut('post')
+    put: shortcut('put')
+    delete: shortcut('delete')
+    any: shortcut('any')
+    
 
 # Export Simrou to the global namespace
 window.Simrou = Simrou

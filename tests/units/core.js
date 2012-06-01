@@ -40,6 +40,7 @@ test('Registration and removal of routes', function() {
             ok(true, 'Attaching action handler at registration works. (2/2)');
         }
     });
+    
     s.resolve('r2', 'get');
     s.resolve('r2', 'post');
     
