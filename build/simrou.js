@@ -85,7 +85,7 @@
       var $route, args, cleanHash, name, route, _ref;
       cleanHash = String(hash).replace(this.RegExpCache.trimHash, '$1');
       if (cleanHash === '') {
-        if (hash.indexOf('/') === -1) {
+        if (String(hash).indexOf('/') === -1) {
           return false;
         } else {
           cleanHash = '/';
