@@ -71,7 +71,7 @@ class Simrou
         # Strip unwanted characters from the hash
         cleanHash = String(hash).replace(@RegExpCache.trimHash, '$1')
         if cleanHash is ''
-            if hash.indexOf('/') is -1
+            if String(hash).indexOf('/') is -1
                 return false
             else
                 cleanHash = '/'
