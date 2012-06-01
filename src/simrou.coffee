@@ -236,6 +236,7 @@ class Route
     # Works just like attachAction, but instead detaches the action
     # handler from the route.
     detachAction: (action, method = 'any') ->
+        # Method only is also valid!
         if typeof action is 'string'
             method = action
         

@@ -1,4 +1,4 @@
-Simrou 1.3
+Simrou 1.4
 ==========
 
 **A very tiny hash-based JavaScript routing system**
