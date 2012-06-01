@@ -20,7 +20,7 @@
             var articles = router.addRoute('/articles/:id');
             
             // Attach an action for GET requests to that route
-            articles.attachAction('get', function(event, method, id) {
+            articles.get(function(event, method, id) {
                 alert('Reading article #' + id);
             });
             

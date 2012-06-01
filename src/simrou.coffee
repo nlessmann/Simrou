@@ -1,5 +1,5 @@
 ###*
-* @preserve Simrou v1.3.5 - Released under the MIT License.
+* @preserve Simrou v1.4 - Released under the MIT License.
 * Copyright (c) 2012 büro für ideen, www.buero-fuer-ideen.de
 ###
 
@@ -30,9 +30,9 @@ class Simrou
         
         if actionHandler?
             if $.isFunction(actionHandler)
-                route.attachAction(actionHandler)
+                route.any(actionHandler)
             else
-                route.attachActions(actionHandler)
+                route.any(actionHandler)
         
         @routes[ route.getRegExp().toString() ] = route
     
@@ -89,10 +89,11 @@ class Simrou
             
             # Trigger wildcard event
             $route = $(route)
-            $route.trigger('simrou:*', args)
+            $route.trigger('simrou:any', args)
             
             # If a method is specified, trigger the specific event
-            $route.trigger('simrou:' + method.toLowerCase(), args) if method?
+            if method? and method isnt 'any'
+                $route.trigger('simrou:' + method.toLowerCase(), args)
             
             return true
         
@@ -220,34 +221,25 @@ class Route
     # - action should be a function.
     # If only one argument is specified (a function), it is
     # registered as an action handler for all methods (*).
-    attachAction: (method, action) ->
-        if not action? and $.isFunction(method)
-            action = method
-            method = '*'
-        
+    attachAction: (action, method = 'any') ->
         $(@).on('simrou:' + method.toLowerCase(), action)
     
     # Allows to bulk attach action handlers.
-    attachActions: (method, actions) ->
-        # Homogenize arguments
-        if $.isArray(method)
-            actions = { '*': method }
-        else if $.isPlainObject(method)
-            actions = method
-        else
+    attachActions: (actions, method = 'any') ->
+        # Homogenize argument
+        if typeof actions isnt 'object'
             actions = new -> @[method] = actions
         
         # Attach the actions
         for own method, list of actions
             list = [list] unless $.isArray(list)
-            @attachAction(method, action) for action in list
+            @attachAction(action, method) for action in list
     
     # Works just like attachAction, but instead detaches the action
     # handler from the route.
-    detachAction: (method, action) ->
-        if not action? and $.isFunction(method)
-            action = method
-            method = '*'
+    detachAction: (action, method = 'any') ->
+        if typeof action is 'string'
+            method = action
         
         eventName = 'simrou:' + method.toLowerCase()
         
@@ -257,13 +249,13 @@ class Route
             $(@).off(eventName)
     
     shortcut = (method) ->
-        (action) -> @attachAction(method, action)
+        (action) -> @attachAction(action, method)
     
     get: shortcut 'get'
     post: shortcut 'post'
     put: shortcut 'put'
     delete: shortcut 'delete'
-    any: shortcut '*'
+    any: shortcut 'any'
 
 
 # Export Simrou to the global namespace

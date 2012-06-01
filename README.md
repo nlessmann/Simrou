@@ -3,14 +3,13 @@ Simrou 1.3
 
 **A very tiny hash-based JavaScript routing system**
 
-Simrou is a small javascript framework, that allows to bind action handlers to <code>window.location.hash</code>.
-This is in particular useful for the development of single-page web applications. See the demo code below to get
+Simrou is a small JavaScript framework that allows to bind event handlers that listen to changes of
+<code>window.location.hash</code>. This is in particular useful when developing single-page web applications,
+because this technique helps to write maintainable code and enables deep-linking. See the demo code below to get
 an idea of how this works.
 
-In contrary to other frameworks with similar features, Simrou is intended to be very simple to setup and use. 
-It does not provide any other features beside the routing - therefore it is very lightweight and flexible.
-
-Simrou is written in CoffeeScript.
+In contrary to other frameworks with similar features, Simrou is intended to be extremly simple to setup and use. 
+It does not provide any other features beside the routing, hence it is very lightweight and flexible.
 
 Demo
 ----
@@ -20,7 +19,7 @@ $(function() {
     // Setup an instance of Simrou
     var router = new Simrou();
     
-    // Register a route that matches all edit requests to your articles
+    // Register a route that matches all edit requests to an articles
     var editRoute = router.addRoute('/article/:id/edit');
     
     // Bind an action handler to that route
@@ -28,13 +27,11 @@ $(function() {
         showEditForm(id);
     });
     
-    // HTML Forms are getting watched, so we can bind an action handler
-    // to POST requests to that same route
-    editRoute.post(function(eventObject, method, id) {
-	    saveChanges(id);
-    });
+    // HTML Forms are getting watched, so you can even bind an
+    // action handler to POST/PUT/DELETE requests.
+    editRoute.post(saveChanges);
     
-    // Get the router running...
+    // Start the engine!
     router.start();
     
     // Navigate somewhere (updates location.hash and resolves the URL)
@@ -54,7 +51,7 @@ Links work just as expected if you prepend them with a hash symbol:
 A typical url within your application will look like this:
 
 ```
-http://your-domain.tld/some/path.html#/article/182/edit
+http://your-domain.tld/#/article/182/edit
 ```
 
 Advanced usage
@@ -127,8 +124,8 @@ route.get(eventHandler);
 If you want to catch a route regardless which HTTP method was intended, you can do that as well:
 
 ```javascript
-route.attachAction(function() {
-    // ..do awesome stuff..
+route.any(function() {
+    // ..do stuff..
 });
 ```
 

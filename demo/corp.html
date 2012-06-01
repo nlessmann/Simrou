@@ -172,7 +172,7 @@
                 routes.contact.post(submitContactForm);
                 
                 routes.fallback = router.addRoute();
-                routes.fallback.attachAction(showNotFoundMessage);
+                routes.fallback.any(showNotFoundMessage);
             };
             
             /* Hides the currently visible view and reports when done. */
