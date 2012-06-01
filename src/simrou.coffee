@@ -1,5 +1,5 @@
 ###*
-* @preserve Simrou v1.3.4 - Released under the MIT License.
+* @preserve Simrou v1.3.5 - Released under the MIT License.
 * Copyright (c) 2012 büro für ideen, www.buero-fuer-ideen.de
 ###
 
@@ -69,16 +69,19 @@ class Simrou
     # Resolves a hash. Method is optional, returns true if matching route found.
     resolve: (hash, method) ->
         # Strip unwanted characters from the hash
-        hash = hash.replace(@RegExpCache.trimHash, '$1');
-        if hash is ''
-            return false
+        cleanHash = String(hash).replace(@RegExpCache.trimHash, '$1')
+        if cleanHash is ''
+            if hash.indexOf('/') is -1
+                return false
+            else
+                cleanHash = '/'
         
         # Iterate over all registerd routes
         for own name, route of @routes
             continue unless route instanceof Route
             
             # Route isn't a match? Continue with the next one
-            args = route.match(hash)
+            args = route.match(cleanHash)
             continue unless args
             
             # Prepend the arguments array with the method
@@ -98,7 +101,7 @@ class Simrou
     # Return the current value for window.location.hash without any
     # leading hash keys (does not remove leading slashes!).
     getHash: (url = location.hash) ->
-        url.replace(@RegExpCache.extractHash, '$1')
+        String(url).replace(@RegExpCache.extractHash, '$1')
     
     # Takes whatever window.location.hash currently is and tries
     # to resolve that hash.
@@ -194,7 +197,7 @@ class Route
         if values.length > 0 and $.isArray(values[0])
             values = values[0]
         
-        url = @pattern
+        url = String(@pattern)
         
         while @RegExpCache.firstParam.test(url)
             # Get the right replacement
@@ -260,6 +263,7 @@ class Route
     post: shortcut 'post'
     put: shortcut 'put'
     delete: shortcut 'delete'
+    any: shortcut '*'
 
 
 # Export Simrou to the global namespace
