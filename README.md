@@ -19,7 +19,7 @@ $(function() {
     // Setup an instance of Simrou
     var router = new Simrou();
     
-    // Register a route that matches all edit requests to an articles
+    // Register a route that matches edit requests to any article
     var editRoute = router.addRoute('/article/:id/edit');
     
     // Bind an action handler to that route
