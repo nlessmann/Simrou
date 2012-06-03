@@ -27,10 +27,7 @@ class Simrou
     # Allows to register a new route with this simrou instance.
     addRoute: (pattern, actionHandler) ->
         route = if pattern instanceof Route then pattern else new Route(pattern)
-        
-        if actionHandler?
-            route.attachActions(actionHandler)
-        
+        route.attachActions(actionHandler) if actionHandler?
         @routes[ route.getRegExp().toString() ] = route
     
     # Allows to bulk register routes.
@@ -50,7 +47,8 @@ class Simrou
     
     # Unregisters the specified route (Route instance or pattern).
     removeRoute: (route) ->
-        route = new Route(route) unless route instanceof Route
+        unless route instanceof Route
+            route = new Route(route)
         
         name = route.getRegExp().toString()
         delete @routes[name] if name of @routes
