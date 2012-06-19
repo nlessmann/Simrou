@@ -20,8 +20,8 @@
             var articles = router.addRoute('/articles/:id');
             
             // Attach an action for GET requests to that route
-            articles.get(function(event, method, id) {
-                alert('Reading article #' + id);
+            articles.get(function(event, params) {
+                alert('Reading article #' + params.id);
             });
             
             // Attach an action for PUT requests using the shortcut function put()
@@ -31,13 +31,13 @@
             
             // Register a second route (for the homepage) and specify an action handler
             // for GET requests right away by using the optional second parameter:
-            router.addRoute('/homepage', function(e, method) {
+            router.addRoute('/homepage', function(event, params, method) {
                 alert('Homepage called, using HTTP method => ' + method);
             });
             
             // Register a route with a wildcard in it:
-            router.addRoute('/portfolio/:section/*').get(function(e, method, section, path) {
-                alert(section + ' ### ' + path);
+            router.addRoute('/portfolio/:section/*path').get(function(event, params) {
+                alert(params.section + ' ### ' + params.path);
             });
             
             // Bulk register routes and action handlers
@@ -57,7 +57,7 @@
             
             // Navigate to an article when the button gets clicked
             $('#test').click(function(e) {
-                router.navigate('/articles/172');
+                router.navigate('/articles/181');
                 e.preventDefault();
             });
         });
@@ -70,11 +70,11 @@
             <li><a href="#/articles/172">Article 172</a></li>
             <li><a href="#/portfolio/webdesign/page/3">Portfolio - Webdesign</a></li>
             <li><a href="#/homepage">Back to the homepage</a></li>
-            <li><a href="#/homepage" id="test">Article 172 via navigate()</a></li>
+            <li><a href="#/homepage" id="test">Article 181 via navigate()</a></li>
         </ul>
         
-        <form action="/articles/172" method="put">
-            <button type="submit">Send form (route for target exists)</button>
+        <form action="/articles/194" method="put">
+            <button type="submit">Send form (route for target exists, article #194)</button>
         </form>
         
         <form action="/test" method="get">

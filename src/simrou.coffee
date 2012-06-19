@@ -28,7 +28,7 @@ class Simrou
     addRoute: (pattern, actionHandler) ->
         route = if pattern instanceof Route then pattern else new Route(pattern)
         route.attachActions(actionHandler) if actionHandler?
-        @routes[ route.getRegExp().toString() ] = route
+        @routes[ route.toString() ] = route
     
     # Allows to bulk register routes.
     addRoutes: (routes) ->
@@ -50,7 +50,7 @@ class Simrou
         unless route instanceof Route
             route = new Route(route)
         
-        name = route.getRegExp().toString()
+        name = route.toString()
         delete @routes[name] if name of @routes
         
     # Changes window.location.hash to the specified hash.
@@ -73,14 +73,16 @@ class Simrou
         
         # Iterate over all registerd routes
         for own name, route of @routes
-            continue unless route instanceof Route
+            unless route instanceof Route
+                continue
             
             # Route isn't a match? Continue with the next one
-            args = route.match(cleanHash)
-            continue unless args
+            params = route.match(cleanHash)
+            unless params
+                continue
             
             # Prepend the arguments array with the method
-            args.unshift(method)
+            args = [params, method]
             
             # Trigger wildcard event
             $route = $(route)
@@ -163,33 +165,45 @@ class Route
     # Cache some static regular expressions - thanks Backbone.js!
     RegExpCache:
         escapeRegExp: /[-[\]{}()+?.,\\^$|#\s]/g
-        namedParam: /:\w+/g
-        splatParam: /\*\w*/g
-        firstParam: /(:\w+)|(\*\w*)/
+        namedParam: /:(\w+)/g
+        splatParam: /\*(\w+)/g
+        firstParam: /(:\w+)|(\*\w+)/
+        allParams: /(:|\*)\w+/g
     
-    constructor: (@pattern = /^.+$/) ->
-        if @pattern instanceof RegExp
-            @expr = @pattern
+    constructor: (@pattern) ->
+        # Ensure that we're dealing with a string
+        pattern = String(@pattern)
+        
+        # Extract names of the parameters and splats
+        names = pattern.match(@RegExpCache.allParams)
+        
+        if names?
+            @params = (name.substr(1) for name in names)
         else
-            # Do some escaping and replace the parameter placeholders
-            # with the proper regular expression
-            pattern = String(@pattern).replace(@RegExpCache.escapeRegExp, '\\$&')
-            pattern = pattern.replace(@RegExpCache.namedParam, '([^\/]+)')
-            pattern = pattern.replace(@RegExpCache.splatParam, '(.*?)')
+            @params = []
             
-            @expr = new RegExp('^' + pattern + '$')
+        # Do some escaping and replace the parameter placeholders
+        # with the proper regular expression
+        pattern = pattern.replace(@RegExpCache.escapeRegExp, '\\$&')
+        pattern = pattern.replace(@RegExpCache.namedParam, '([^\/]+)')
+        pattern = pattern.replace(@RegExpCache.splatParam, '(.*?)')
+        
+        @expr = new RegExp('^' + pattern + '$')
     
     # Returns an array if this route matches the specified hash (false otherwise).
     match: (hash) ->
         matches = @expr.exec(hash)
-        if $.isArray(matches) then matches.slice(1) else false
+        
+        if $.isArray(matches)
+            result = {}
+            result[name] = matches[index + 1] for name, index in @params
+        else
+            result = false
+        
+        result
     
     # Assembles a concrete url out of this route.
     assemble: (values...) ->
-        # Cannot assemble a route if it's based on a regular expression
-        if @pattern instanceof RegExp
-            throw 'Assembling routes that are based on a regular expression is not supported.'
-        
         if values.length > 0 and $.isArray(values[0])
             values = values[0]
         
@@ -207,9 +221,9 @@ class Route
         
         url
     
-    # Returns the regular expression that describes this route.
-    getRegExp: ->
-        @expr
+    # Returns a string representation of this route.
+    toString: ->
+        String(@pattern)
     
     # Allows to attach an action handler to this route.
     # - method can be * (wildcard), get, post, put or delete
