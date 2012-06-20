@@ -210,9 +210,13 @@ class Route
     
     # Assembles a concrete url out of this route.
     assemble: (values...) ->
-        if values.length > 0 and $.isArray(values[0])
-            values = values[0]
-        
+        if values.length > 0
+            if $.isArray(values[0])
+                values = values[0]
+            else if $.isPlainObject(values[0])
+                # Sort values in the way the appear in @params
+                values = ((if name of values[0] then values[0][name] else '') for name in @params)
+                
         url = String(@pattern)
         
         while @RegExpCache.firstParam.test(url)

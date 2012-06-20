@@ -105,10 +105,10 @@ Any action handler attached to this route will be called with the following argu
 function actionHandler(event, parameters, method)
 ```
 
-* event is a [jQuery event object](http://api.jquery.com/category/events/event-object/).
-* parameters is a plain object that contains the values extracted from the route (parameters and splats).<br>
+* <code>event</code> is a [jQuery event object](http://api.jquery.com/category/events/event-object/).
+* <code>parameters</code> is a plain object that contains the values extracted from the route (parameters and splats).<br>
   With the route from above example, parameter has two properties, "edit" and "action".
-* method is a string such as 'get' or 'post', specifing the desired HTTP method.
+* <code>method</code> is a string such as 'get' or 'post', specifing the desired HTTP method.
 
 
 ### Case-insensitive routes
@@ -128,6 +128,9 @@ The route object provides a nifty helper method to get a concrete url:
 ```javascript
 var article = router.addRoute('/articles/:id/*action');
 var url = article.assemble(17, 'edit'); // returns: /articles/17/edit
+
+// Equivalent syntax:
+url = article.assemble({ id: 17, action: 'edit' });
 ```
 
 
