@@ -90,7 +90,7 @@ same as in [Backbone.js](http://documentcloud.github.com/backbone/)).
 * Parameters are introduced by a colon and end at the next slash.  
   e.g. "/test/:name" matches "/test/mike" and "/test/joe", but not "/test/joe/something".
 
-* Splats start with an asterix and may optionally be followed by a name.  
+* Splats start with an asterix and must be followed by a name.
   e.g. "/test/*sp" matches "/test/joe" (extracting "joe") and "/test/joe/something/more" (extracting "joe/something/more").
 
 Parameters and splats can be mixed:
@@ -108,6 +108,7 @@ function actionHandler(event, parameters, method)
 * event is a [jQuery event object](http://api.jquery.com/category/events/event-object/).
 * method is a string such as 'get' or 'post', specifing the desired HTTP method.
 * parameters is a plain object that contains the values extracted from the route (parameters and splats).
+  With the route from above example, parameter has two properties, "edit" and "action".
 
 
 ### Case-insensitive routes
