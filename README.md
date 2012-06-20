@@ -24,8 +24,8 @@ $(function() {
     var editRoute = router.addRoute('/article/:id/edit');
     
     // Bind an action handler to that route
-    editRoute.get(function(event, method, id) {
-        showEditForm(id);
+    editRoute.get(function(event, params) {
+        showEditForm(params.id);
     });
     
     // HTML Forms are getting watched, so you can even bind an
@@ -102,12 +102,22 @@ var articleRoute = router.addRoute('/articles/:edit/*action');
 Any action handler attached to this route will be called with the following arguments:
 
 ```javascript
-function actionHandler(event, method, edit, action)
+function actionHandler(event, parameters, method)
 ```
 
 * event is a [jQuery event object](http://api.jquery.com/category/events/event-object/).
 * method is a string such as 'get' or 'post', specifing the desired HTTP method.
-* edit and action are the values extracted from the route.
+* parameters is a plain object that contains the values extracted from the route (parameters and splats).
+
+
+### Case-insensitive routes
+
+By default, all routes are case-sensitive. For a situation where you need to create a case-insensitive route,
+<code>addRoute()</code> accepts a second parameter:
+
+```javascript
+var route = router.addRoute('/foo', false); // <-- route is now case-insensitive, e.g. '/FOO' is a match.
+```
 
 
 ### Assembling routes
