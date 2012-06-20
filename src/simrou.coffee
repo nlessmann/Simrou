@@ -175,7 +175,7 @@ class Route
         firstParam: /(:\w+)|(\*\w+)/
         allParams: /(:|\*)\w+/g
     
-    constructor: (@pattern, caseSensitive = true) ->
+    constructor: (@pattern, @caseSensitive = true) ->
         # Ensure that we're dealing with a string
         pattern = String(@pattern)
         
