@@ -106,9 +106,9 @@ function actionHandler(event, parameters, method)
 ```
 
 * event is a [jQuery event object](http://api.jquery.com/category/events/event-object/).
-* method is a string such as 'get' or 'post', specifing the desired HTTP method.
-* parameters is a plain object that contains the values extracted from the route (parameters and splats).
+* parameters is a plain object that contains the values extracted from the route (parameters and splats).<br>
   With the route from above example, parameter has two properties, "edit" and "action".
+* method is a string such as 'get' or 'post', specifing the desired HTTP method.
 
 
 ### Case-insensitive routes
