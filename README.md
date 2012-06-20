@@ -1,4 +1,4 @@
-Simrou 1.4
+Simrou 1.5
 ==========
 
 **A very tiny hash-based JavaScript routing system**
@@ -10,6 +10,7 @@ an idea of how this works.
 
 In contrary to other frameworks with similar features, Simrou is intended to be extremly simple to setup and use. 
 It does not provide any other features beside the routing, hence it is very lightweight and flexible.
+
 
 Demo
 ----
@@ -54,8 +55,11 @@ A typical url within your application will look like this:
 http://your-domain.tld/#/article/182/edit
 ```
 
+
 Advanced usage
 --------------
+
+### Bulk adding of routes
 
 You can add more than one route or action handler at a time:
 
@@ -76,6 +80,9 @@ $(function() {
     router.start('/homepage');   // Handing over a default route to navigate to
 });
 ```
+
+
+### Wildcards
 
 You can use two different types of wildcards in your routes: **Parameters** and **Splats** (this is just the 
 same as in [Backbone.js](http://documentcloud.github.com/backbone/)).
@@ -102,12 +109,18 @@ function actionHandler(event, method, edit, action)
 * method is a string such as 'get' or 'post', specifing the desired HTTP method.
 * edit and action are the values extracted from the route.
 
+
+### Assembling routes
+
 The route object provides a nifty helper method to get a concrete url:
 
 ```javascript
 var article = router.addRoute('/articles/:id/*action');
 var url = article.assemble(17, 'edit'); // returns: /articles/17/edit
 ```
+
+
+### Attaching event handlers via jQuery events
 
 Action handlers can be attached via jQuery events instead of using Simrou's <code>attachAction()</code> method:
 
@@ -121,6 +134,9 @@ $(route).on('simrou:get', eventHandler);
 route.get(eventHandler);
 ```
 
+
+### Event handlers for "any" HTTP method
+
 If you want to catch a route regardless which HTTP method was intended, you can do that as well:
 
 ```javascript
@@ -128,6 +144,7 @@ route.any(function() {
     // ..do stuff..
 });
 ```
+
 
 Requirements &amp; License
 --------------------------
