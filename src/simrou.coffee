@@ -25,9 +25,12 @@ class Simrou
         @addRoutes(initialRoutes) if initialRoutes?
     
     # Allows to register a new route with this simrou instance.
-    addRoute: (pattern, actionHandler) ->
-        route = if pattern instanceof Route then pattern else new Route(pattern)
-        route.attachActions(actionHandler) if actionHandler?
+    addRoute: (pattern, caseSensitive = true) ->
+        if pattern instanceof Route
+            route = pattern
+        else
+            route = new Route(pattern, caseSensitive)
+        
         @routes[ route.toString() ] = route
     
     # Allows to bulk register routes.
@@ -40,8 +43,10 @@ class Simrou
                 list.push( @addRoute(route) )
         else
             list = {}
-            for own pattern, route of routes
-                list[pattern] = @addRoute(pattern, route)
+            for own pattern, actions of routes
+                route = @addRoute(pattern)
+                route.attachActions(actions)
+                list[pattern] = route
         
         list
     
@@ -170,7 +175,7 @@ class Route
         firstParam: /(:\w+)|(\*\w+)/
         allParams: /(:|\*)\w+/g
     
-    constructor: (@pattern) ->
+    constructor: (@pattern, caseSensitive = true) ->
         # Ensure that we're dealing with a string
         pattern = String(@pattern)
         
@@ -188,7 +193,8 @@ class Route
         pattern = pattern.replace(@RegExpCache.namedParam, '([^\/]+)')
         pattern = pattern.replace(@RegExpCache.splatParam, '(.*?)')
         
-        @expr = new RegExp('^' + pattern + '$')
+        flags = if caseSensitive then '' else 'i'
+        @expr = new RegExp('^' + pattern + '$', flags)
     
     # Returns an array if this route matches the specified hash (false otherwise).
     match: (hash) ->
