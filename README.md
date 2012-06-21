@@ -168,7 +168,7 @@ route.get(eventHandler1);
 route.get(eventHandler2);
 route.any(eventHandler3);
 
-router.resolve('some/route'); // all three event handlers get notified!
+router.resolve('some/route', 'get'); // all three event handlers get notified!
 ```
 
 
