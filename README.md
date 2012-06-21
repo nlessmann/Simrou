@@ -136,7 +136,7 @@ url = article.assemble({ id: 17, action: 'edit' });
 
 ### Attaching event handlers via jQuery events
 
-Action handlers can be attached via jQuery events instead of using Simrou's <code>attachAction()</code> method:
+Action handlers can be attached via jQuery events instead of using Simrou's <code>attachAction()</code> method or the shortcuts <code>get(), post(), put(), delete() and any()</code>:
 
 ```javascript
 var route = router.addRoute('some/route');
@@ -157,6 +157,18 @@ If you want to catch a route regardless which HTTP method was intended, you can 
 route.any(function() {
     // ..do stuff..
 });
+```
+
+Note that it is possible to bind multiple event handlers to a route, e.g.:
+
+```javascript
+var route = router.addRoute('some/route');
+
+route.get(eventHandler1);
+route.get(eventHandler2);
+route.any(eventHandler3);
+
+router.resolve('some/route'); // all three event handlers get notified!
 ```
 
 
