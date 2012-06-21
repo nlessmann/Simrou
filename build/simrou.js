@@ -206,9 +206,7 @@
     function Route(pattern, caseSensitive) {
       var flags, name, names;
       this.pattern = pattern;
-      if (caseSensitive == null) {
-        caseSensitive = true;
-      }
+      this.caseSensitive = caseSensitive != null ? caseSensitive : true;
       pattern = String(this.pattern);
       names = pattern.match(this.RegExpCache.allParams);
       if (names != null) {
