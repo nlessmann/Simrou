@@ -222,7 +222,7 @@
             };
             
             /* Action => Shows the slogan with ID "id" */
-            var showSlogan = function(e, m, id) {
+            var showSlogan = function(event, params) {
                 // Cache the slogans if cache is still empty
                 if (!$slogans) {
                     $slogans = $('#slogans h2');
@@ -241,7 +241,7 @@
                 }
                 
                 // Validate ID of the requested slogan
-                id = Math.max(1, parseInt(id) || 1);
+                var id = Math.max(1, parseInt(params.id) || 1);
                 if (id > $slogans.length) {
                     id = 1;
                 }
