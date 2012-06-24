@@ -1,0 +1,56 @@
+<!DOCTYPE html>   
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>Simrou Spec Runner</title>
+        
+        <link rel="shortcut icon" type="image/png" href="lib/jasmine-1.2.0/jasmine_favicon.png">
+        <link rel="stylesheet" type="text/css" href="lib/jasmine-1.2.0/jasmine.css">
+        
+        <!-- jQuery -->
+        <script type="text/javascript" src="lib/jquery-1.7.2.min.js"></script>
+        
+        <!-- Jasmine -->
+        <script type="text/javascript" src="lib/jasmine-1.2.0/jasmine.js"></script>
+        <script type="text/javascript" src="lib/jasmine-1.2.0/jasmine-html.js"></script>
+        
+        <!-- Simrou -->
+        <script type="text/javascript" src="../build/simrou.min.js"></script>
+        
+        <!-- Tests -->
+        <script type="text/coffeescript" src="environment.coffee"></script>
+        <script type="text/coffeescript" src="simrou.coffee"></script>
+        <script type="text/coffeescript" src="route.coffee"></script>
+        
+        <!-- Coffe-Script compiler -->
+        <script type="text/javascript" src="lib/coffee-script.js"></script>
+        
+        <!-- Runner -->
+        <script type="text/javascript">
+        (function() {
+            // Setup Jasmine testing environment
+            var jasmineEnv = jasmine.getEnv();
+            jasmineEnv.updateInterval = 250;
+            
+            // Add HTML reporter
+            var htmlReporter = new jasmine.HtmlReporter();
+            jasmineEnv.addReporter(htmlReporter);
+            
+            // Add spec filter
+            jasmineEnv.specFilter = function(spec) {
+                return htmlReporter.specFilter(spec);
+            };
+            
+            // Run tests when page fully loaded
+            window.onload = function() {
+                setTimeout(function() {
+                    jasmineEnv.execute();
+                }, 1000);
+            };
+        })();
+        </script>
+    </head>
+    
+    <body></body>
+</html>
