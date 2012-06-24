@@ -6,7 +6,17 @@ describe 'The JavaScript engine', ->
         expect(typeof location).toBe('object')
         expect(typeof location.hash).toBe('string')
     
-    it 'provides the onHashChange event', ->
+    it 'allows changing location.hash', ->
+        location.hash = ''
+        expect(location.hash).not.toEqual('#foo')
+        location.hash = 'foo'
+        expect(location.hash).toEqual('#foo')
+        
+    it 'ignores leading hash symbols when writing to location.hash', ->
+        location.hash = '#bar'
+        expect(location.hash).toEqual('#bar')
+    
+    it 'provides the "onHashChange" event', ->
         expect('onhashchange' of window).toBe(true)
 
 
