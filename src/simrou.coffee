@@ -34,21 +34,21 @@ class Simrou
         @routes[ route.toString() ] = route
     
     # Allows to bulk register routes.
-    addRoutes: (routes) ->
+    addRoutes: (routes, caseSensitive = true) ->
         if $.isFunction(routes)
-            list = routes.call(@)
+            list = routes.call(@, caseSensitive)
         else if $.isArray(routes)
             list = []
             for route in routes
-                list.push( @addRoutes(route) )
+                list.push( @addRoutes(route, caseSensitive) )
         else if $.isPlainObject(routes)
             list = {}
             for own pattern, actions of routes
-                route = @addRoute(pattern)
+                route = @addRoute(pattern, caseSensitive)
                 route.attachActions(actions)
                 list[pattern] = route
         else
-            list = addRoute(routes)
+            list = @addRoute(routes, caseSensitive)
         
         list
     
