@@ -41,12 +41,14 @@ class Simrou
             list = []
             for route in routes
                 list.push( @addRoute(route) )
-        else
+        else if $.isPlainObject(routes)
             list = {}
             for own pattern, actions of routes
                 route = @addRoute(pattern)
                 route.attachActions(actions)
                 list[pattern] = route
+        else
+            list = addRoute(routes)
         
         list
     
