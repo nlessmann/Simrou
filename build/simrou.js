@@ -37,16 +37,23 @@
       }
     }
 
+    Simrou.prototype.createRoute = function(pattern, caseSensitive) {
+      if (caseSensitive == null) {
+        caseSensitive = true;
+      }
+      if (pattern instanceof Route) {
+        return pattern;
+      } else {
+        return new Route(pattern, caseSensitive);
+      }
+    };
+
     Simrou.prototype.addRoute = function(pattern, caseSensitive) {
       var route;
       if (caseSensitive == null) {
         caseSensitive = true;
       }
-      if (pattern instanceof Route) {
-        route = pattern;
-      } else {
-        route = new Route(pattern, caseSensitive);
-      }
+      route = this.createRoute(pattern, caseSensitive);
       return this.routes[route.toString()] = route;
     };
 

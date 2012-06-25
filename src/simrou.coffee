@@ -24,13 +24,13 @@ class Simrou
         # Create initial routes
         @addRoutes(initialRoutes) if initialRoutes?
     
+    # Allows to create a new route that is NOT attached to this router instance.
+    createRoute: (pattern, caseSensitive = true) ->
+        if pattern instanceof Route then pattern else new Route(pattern, caseSensitive)
+    
     # Allows to register a new route with this simrou instance.
     addRoute: (pattern, caseSensitive = true) ->
-        if pattern instanceof Route
-            route = pattern
-        else
-            route = new Route(pattern, caseSensitive)
-        
+        route = @createRoute(pattern, caseSensitive)
         @routes[ route.toString() ] = route
     
     # Allows to bulk register routes.
