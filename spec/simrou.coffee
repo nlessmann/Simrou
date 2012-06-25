@@ -161,6 +161,13 @@ describe 'Simrou', ->
             router.resolve('foo', 'PUT')
             expect(spy).not.toHaveBeenCalled()
         
+        it 'invokes all registered event handlers', ->
+            route.any(spy)
+            route.get(spy)
+            
+            router.resolve('foo', 'GET')
+            expect(spy.calls.length).toBe(2)
+        
         it 'reports whether the route has been successfully resolved', ->
             route.any(spy)
             expect(router.resolve('foo')).toBeTruthy()
@@ -178,10 +185,60 @@ describe 'Simrou', ->
         
     
     describe 'navigate()', ->
-        # ...
+        router = null
+        spy = jasmine.createSpy('actionHandler')
+        
+        beforeEach ->
+            router = new Simrou()
+            spy.reset()
+        
+        it 'sets location.hash to the specified hash', ->
+            location.hash = ''
+            router.navigate('foo')
+            expect(location.hash).toBe('#foo')
+        
+        it 'notifies the GET event handlers', ->
+            route = router.addRoute('foo')
+            route.get(spy)
+            
+            location.hash = ''
+            router.navigate('foo')
+            
+            expect(spy).toHaveBeenCalled()
+        
+        it 'notifies the event handlers, even when the hash did not change', ->
+            route = router.addRoute('foo')
+            route.get(spy)
+            
+            location.hash = 'foo'
+            router.navigate('foo')
+            
+            expect(spy).toHaveBeenCalled()
         
     
     describe 'removeRoute()', ->
-        # ...
+        router = null
+        spy = jasmine.createSpy('actionHandler')
         
+        beforeEach ->
+            router = new Simrou()
+            spy.reset()
+        
+        it 'can unattach a route by its route object', ->
+            route = router.addRoute('foo')
+            router.removeRoute(route)
+            
+            expect(router.resolve('foo')).toBeFalsy()
+        
+        it 'can unattach a route by its pattern', ->
+            router.addRoute('foo')
+            router.removeRoute('foo')
+            
+            expect(router.resolve('foo')).toBeFalsy()
+        
+    
+describe 'A router', ->
+    
+    it 'can be started and stopped', ->
+        # ...
     
