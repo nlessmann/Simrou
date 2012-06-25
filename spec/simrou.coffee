@@ -54,6 +54,14 @@ describe 'Simrou', ->
         
         beforeEach ->
             router = new Simrou()
+            
+        it 'can also be used to attach a single route', ->
+            route = router.addRoutes('foo')
+            expect(route).toEqual(router.addRoute('foo'))
+        
+        it 'can also be used to attach a single case-insensitive route', ->
+            route = router.addRoutes('foo', false)
+            expect(route.caseSensitive).toBeFalsy()
         
         it 'invokes a function in the context of the router', ->
             spy = jasmine.createSpy('fn').andCallFake ->
@@ -77,17 +85,64 @@ describe 'Simrou', ->
             router.addRoutes(spy, true)
             expect(spy).toHaveBeenCalledWith(true)
         
+        it 'attaches all routes from a plain object and returns an object containing the Route instances', ->
+            result = router.addRoutes
+                foo: ->
+                bar: ->
+            
+            expect($.isPlainObject(result)).toBeTruthy()
+            expect(typeof route).toBe('object') for pattern, route in result
+        
+        it 'can attach case-insensitive routes from a plain object', ->
+            routes =
+                foo: ->
+                bar: ->
+            result = router.addRoutes(routes, false)
+            
+            expect(result.foo.caseSensitive).toBeFalsy()
+        
         it 'attaches all routes from an array and returns an array of Route instances', ->
             result = router.addRoutes(['foo', 'bar'])
             expect(result instanceof Array).toBeTruthy()
             expect(result.length).toBe(2)
             expect(typeof route).toBe('object') for route in result
+        
+        it 'allows arrays to again contain arrays', ->
+            arr = ['bar', 'baz']
+            result = router.addRoutes(['foo', arr])
             
-        it 'can attaches case-insensitive routes from an array', ->
+            expect(result.length).toBe(2)
+            expect(result[1]).toEqual(router.addRoutes(arr))
+        
+        it 'allows arrays to contain functions', ->
+            spy = jasmine.createSpy('fn').andReturn('bar')
+            result = router.addRoutes(['foo', spy])
+            
+            expect(spy).toHaveBeenCalled()
+        
+        it 'allows arrays to contain objects', ->
+            obj = 
+                bar: ->
+            result = router.addRoutes(['foo', obj])
+            
+            expect(result.length).toBe(2)
+            #expect(result[1]).toEqual(router.addRoutes(obj)) # does not work, seems to be a bug in jasmine
+        
+        it 'can attach case-insensitive routes from an array', ->
             result = router.addRoutes(['bar', 'foo'], false)
             expect(route.caseSensitive).toBeFalsy() for route in result
         
+    
+    describe 'resolve()', ->
+        router = null
         
-        # Array
-        # Object
-        # String
+        beforeEach ->
+            router = new Simrou()
+        
+        it 'invokes the "any" action handler of a registered route', ->
+            spy = jasmine.createSpy('actionHandler')
+            route = router.addRoute('foo')
+            route.any(spy)
+            
+            router.resolve('foo')
+            expect(spy).toHaveBeenCalled()
