@@ -237,8 +237,4 @@ describe 'Simrou', ->
             expect(router.resolve('foo')).toBeFalsy()
         
     
-describe 'A router', ->
-    
-    it 'can be started and stopped', ->
-        # ...
-    
+# start() / stop()
