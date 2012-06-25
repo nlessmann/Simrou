@@ -50,25 +50,30 @@
       return this.routes[route.toString()] = route;
     };
 
-    Simrou.prototype.addRoutes = function(routes) {
+    Simrou.prototype.addRoutes = function(routes, caseSensitive) {
       var actions, list, pattern, route, _i, _len;
+      if (caseSensitive == null) {
+        caseSensitive = true;
+      }
       if ($.isFunction(routes)) {
-        list = routes.call(this);
+        list = routes.call(this, caseSensitive);
       } else if ($.isArray(routes)) {
         list = [];
         for (_i = 0, _len = routes.length; _i < _len; _i++) {
           route = routes[_i];
-          list.push(this.addRoute(route));
+          list.push(this.addRoutes(route, caseSensitive));
         }
-      } else {
+      } else if ($.isPlainObject(routes)) {
         list = {};
         for (pattern in routes) {
           if (!__hasProp.call(routes, pattern)) continue;
           actions = routes[pattern];
-          route = this.addRoute(pattern);
+          route = this.addRoute(pattern, caseSensitive);
           route.attachActions(actions);
           list[pattern] = route;
         }
+      } else {
+        list = this.addRoute(routes, caseSensitive);
       }
       return list;
     };
