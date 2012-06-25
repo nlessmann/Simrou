@@ -135,14 +135,53 @@ describe 'Simrou', ->
     
     describe 'resolve()', ->
         router = null
+        route = null
+        spy = jasmine.createSpy('actionHandler')
         
         beforeEach ->
             router = new Simrou()
+            route = router.addRoute('foo')
+            spy.reset()
         
         it 'invokes the "any" action handler of a registered route', ->
-            spy = jasmine.createSpy('actionHandler')
-            route = router.addRoute('foo')
             route.any(spy)
-            
             router.resolve('foo')
             expect(spy).toHaveBeenCalled()
+            
+            spy.reset()
+            router.resolve('bar')
+            expect(spy).not.toHaveBeenCalled()
+        
+        it 'invokes the event handlers specific to the HTTP method', ->
+            route.post(spy)
+            router.resolve('foo', 'POST')
+            expect(spy).toHaveBeenCalled()
+            
+            spy.reset()
+            router.resolve('foo', 'PUT')
+            expect(spy).not.toHaveBeenCalled()
+        
+        it 'reports whether the route has been successfully resolved', ->
+            route.any(spy)
+            expect(router.resolve('foo')).toBeTruthy()
+            expect(router.resolve('bar')).toBeFalsy()
+        
+        it 'ignores leading hash symbols', ->
+            expect(router.resolve('###foo')).toBeTruthy()
+        
+        it 'ignores trailing slashes', ->
+            expect(router.resolve('foo///')).toBeTruthy()
+        
+        it 'can resolve "/"', ->
+            router.addRoute('/')
+            expect(router.resolve('/')).toBeTruthy()
+        
+    
+    describe 'navigate()', ->
+        # ...
+        
+    
+    describe 'removeRoute()', ->
+        # ...
+        
+    
