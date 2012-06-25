@@ -11,4 +11,5 @@ describe 'Simrou', ->
         expect(router instanceof Simrou).toBeTruthy()
     
     it 'reports correctly that the testing environment supports the onHashChange event', ->
+        router = new Simrou()
         expect(router.eventSupported).toBeTruthy()
