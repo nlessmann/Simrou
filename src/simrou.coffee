@@ -40,7 +40,7 @@ class Simrou
         else if $.isArray(routes)
             list = []
             for route in routes
-                list.push( @addRoute(route) )
+                list.push( @addRoutes(route) )
         else if $.isPlainObject(routes)
             list = {}
             for own pattern, actions of routes
