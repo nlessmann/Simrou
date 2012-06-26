@@ -21,15 +21,16 @@
             articlesRoute = router.addRoute '/articles/:id'
             
             # Attach an action handler for GET requests to this route
-            articlesRoute.get (event, method, id) ->
-                alert 'Article ID: ' + id
+            articlesRoute.get (event, params) ->
+                alert 'Article ID: ' + params.id
             
             # The same works for other HTTP methods, like PUT (makes sense for HTML forms)
-            articlesRoute.put (event, method, id) ->
-                alert 'Article route (ID: ' + id + ') matched via HTTP method = PUT'
+            articlesRoute.put (event, params) ->
+                alert 'Article route (ID: ' + params.id + ') matched via HTTP method = PUT'
             
             # Now lets register a route for the homepage
-            router.addRoute '/homepage', (event, method) ->
+            homepage = router.addRoute '/homepage'
+            homepage.any (event, params, method) ->
                 alert 'Homepage route matched via HTTP method = ' + method
             
             # Get the router running!

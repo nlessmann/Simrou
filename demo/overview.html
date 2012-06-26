@@ -29,9 +29,8 @@
                 alert('Article - via PUT!');
             });
             
-            // Register a second route (for the homepage) and specify an action handler
-            // for GET requests right away by using the optional second parameter:
-            router.addRoute('/homepage', function(event, params, method) {
+            // Register a second route (for the homepage, case-insensitive = second parameter to false)
+            router.addRoute('/homepage', false).any(function(event, params, method) {
                 alert('Homepage called, using HTTP method => ' + method);
             });
             
