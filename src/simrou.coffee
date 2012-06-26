@@ -18,8 +18,8 @@ class Simrou
         # Initialize class members
         @routes = {}
         
-        @observingHash = false
-        @observingForms = false
+        @observeHash = false
+        @observeForms = false
         
         # Create initial routes
         @addRoutes(initialRoutes) if initialRoutes?
@@ -65,7 +65,7 @@ class Simrou
         previousHash = @getHash()
         location.hash = hash
         
-        if not @observingHash or location.hash is previousHash
+        if not @observeHash or location.hash is previousHash
             @resolve(hash, 'get')
         
     # Resolves a hash. Method is optional, returns true if matching route found.
@@ -111,36 +111,34 @@ class Simrou
     # Takes whatever window.location.hash currently is and tries
     # to resolve that hash.
     resolveHash: (event) =>
-        url = event.originalEvent.newURL if @eventSupported
-        hash = @getHash(url)
-        @resolve(hash, 'get')
+        if @observeHash
+            url = event.originalEvent.newURL if @eventSupported
+            hash = @getHash(url)
+            @resolve(hash, 'get')
     
     # Can be bound to forms (onSubmit). Suppresses the submission of
     # any form, if a matching route for the form's action is found.
     handleFormSubmit: (event) =>
-        $form = $(event.target)
-        
-        method = $form.attr('method') or $form.get(0).getAttribute('method')
-        action = @getHash( $form.attr('action') )
-        
-        if @resolve(action, method)
-            event.preventDefault()
+        if @observeForms
+            $form = $(event.target)
+            
+            method = $form.attr('method') or $form.get(0).getAttribute('method')
+            action = @getHash( $form.attr('action') )
+            
+            if @resolve(action, method)
+                event.preventDefault()
         
         true
     
     # Starts the routing process - binds the Simrou instance to several
     # events and navigates to the specified initial hash, if window.
     # location.hash is empty.
-    start: (initialHash, observeHash = true, observeForms = true) ->
+    start: (initialHash, @observeHash = true, @observeForms = true) ->
         # Register event handler for the onHashChange event
-        if observeHash
-            $(window).on('hashchange', @resolveHash)
-            @observingHash = true
+        $(window).off('hashchange', @resolveHash).on('hashchange', @resolveHash)
         
         # Listen to form submissions
-        if observeForms
-            $('body').on('submit', 'form', @handleFormSubmit)
-            @observingForms = true
+        $('body').off('submit', 'form', @handleFormSubmit).on('submit', 'form', @handleFormSubmit)
         
         # Resolve the current or (if none) the initial hash
         hash = @getHash()
@@ -158,13 +156,9 @@ class Simrou
     # Stops the routing process - all event handlers registered by this
     # Simrou instance get unbind.
     stop: ->
-        # Stop observing hash changes
-        $(window).off('hashchange', @resolveHash)
-        @observingHash = false
-        
-        # Stop listening to form submissions
-        $('body').off('submit', 'form', @handleFormSubmit)
-        @observingForms = false
+        # Stop observing hash changes and form submissions
+        @observeHash = false
+        @observeForms = false
 
 
 class Route

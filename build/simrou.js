@@ -30,8 +30,8 @@
 
       this.resolveHash = __bind(this.resolveHash, this);
       this.routes = {};
-      this.observingHash = false;
-      this.observingForms = false;
+      this.observeHash = false;
+      this.observeForms = false;
       if (initialRoutes != null) {
         this.addRoutes(initialRoutes);
       }
@@ -100,7 +100,7 @@
       var previousHash;
       previousHash = this.getHash();
       location.hash = hash;
-      if (!this.observingHash || location.hash === previousHash) {
+      if (!this.observeHash || location.hash === previousHash) {
         return this.resolve(hash, 'get');
       }
     };
@@ -146,40 +146,34 @@
 
     Simrou.prototype.resolveHash = function(event) {
       var hash, url;
-      if (this.eventSupported) {
-        url = event.originalEvent.newURL;
+      if (this.observeHash) {
+        if (this.eventSupported) {
+          url = event.originalEvent.newURL;
+        }
+        hash = this.getHash(url);
+        return this.resolve(hash, 'get');
       }
-      hash = this.getHash(url);
-      return this.resolve(hash, 'get');
     };
 
     Simrou.prototype.handleFormSubmit = function(event) {
       var $form, action, method;
-      $form = $(event.target);
-      method = $form.attr('method') || $form.get(0).getAttribute('method');
-      action = this.getHash($form.attr('action'));
-      if (this.resolve(action, method)) {
-        event.preventDefault();
+      if (this.observeForms) {
+        $form = $(event.target);
+        method = $form.attr('method') || $form.get(0).getAttribute('method');
+        action = this.getHash($form.attr('action'));
+        if (this.resolve(action, method)) {
+          event.preventDefault();
+        }
       }
       return true;
     };
 
     Simrou.prototype.start = function(initialHash, observeHash, observeForms) {
       var hash;
-      if (observeHash == null) {
-        observeHash = true;
-      }
-      if (observeForms == null) {
-        observeForms = true;
-      }
-      if (observeHash) {
-        $(window).on('hashchange', this.resolveHash);
-        this.observingHash = true;
-      }
-      if (observeForms) {
-        $('body').on('submit', 'form', this.handleFormSubmit);
-        this.observingForms = true;
-      }
+      this.observeHash = observeHash != null ? observeHash : true;
+      this.observeForms = observeForms != null ? observeForms : true;
+      $(window).off('hashchange', this.resolveHash).on('hashchange', this.resolveHash);
+      $('body').off('submit', 'form', this.handleFormSubmit).on('submit', 'form', this.handleFormSubmit);
       hash = this.getHash();
       if (hash !== '') {
         return this.resolve(hash, 'get');
@@ -194,10 +188,8 @@
     };
 
     Simrou.prototype.stop = function() {
-      $(window).off('hashchange', this.resolveHash);
-      this.observingHash = false;
-      $('body').off('submit', 'form', this.handleFormSubmit);
-      return this.observingForms = false;
+      this.observeHash = false;
+      return this.observeForms = false;
     };
 
     return Simrou;
