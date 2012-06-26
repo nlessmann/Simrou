@@ -249,4 +249,104 @@ describe 'Simrou', ->
             expect(router.resolve('foo')).toBeFalsy()
         
     
-# To do: start() / stop()
+    describe 'start()', ->
+        router = null
+        spies = (jasmine.createSpy('eventHandler' + i) for i in [1..2])
+        $form = $('<form action="foo" method="put"></form>')
+        
+        beforeEach ->
+            router = new Simrou()
+            spy.reset() for spy in spies
+            $form.appendTo('body')
+            
+            runs -> location.hash = ''
+            waits(250)  # wait for the event to be distributed (async process!)
+        
+        afterEach ->
+            $(window).off('hashchange')
+            $('body').off('submit', 'form')
+            $form.remove()
+        
+        it 'resolves location.hash if it is not empty', ->
+            router.addRoute('baz').get(spies[0])
+            router.addRoute('foo').any(spies[1])
+            
+            runs ->
+                location.hash = 'baz'
+                router.start('foo')
+            waitsFor (-> spies[0].calls.length > 0), 'Route getting resolved', 250
+            runs -> expect(spies[1]).not.toHaveBeenCalled()
+        
+        it 'navigates to an initial hash, if one is specified and location.hash is empty', ->
+            router.addRoute('bar').get(spies[0])
+            runs -> router.start('bar')
+            waitsFor (-> spies[0].calls.length > 0), 'Route getting resolved', 250
+            runs -> expect(location.hash).toBe('#bar')
+        
+        it 'makes the router listen to hash changes by default', ->
+            router.addRoute('foo').get(spies[0])
+            runs ->
+                router.start()
+                location.hash = 'foo'
+            waitsFor (-> spies[0].calls.length > 0), 'Route getting resolved', 250
+        
+        it 'can be told to not make the router listen to hash changes', ->
+            router.addRoute('baz').any(spies[0])
+            runs ->
+                router.start(null, false)
+                location.hash = 'baz'
+            waits(250)
+            runs -> expect(spies[0]).not.toHaveBeenCalled()
+        
+        it 'makes the router listen to form submissions (no redirect, not update of location.hash)', ->
+            router.addRoute('foo').put(spies[0])
+            runs ->
+                router.start()
+                $form.submit()
+            waitsFor (-> spies[0].calls.length > 0), 'Route getting resolved', 250
+            runs -> expect(location.hash).not.toBe('#foo')
+        
+        it 'can be told not to make the router listen to form submissions', ->
+            router.addRoute('foo').put(spies[0])
+            runs ->
+                router.start(null, false, false)
+                $form.on('submit', ((e) -> do e.preventDefault)).submit()
+            waits(250)
+            runs ->
+                expect(spies[0]).not.toHaveBeenCalled()
+        
+    
+    describe 'stop()', ->
+        router = new Simrou()
+        spy = jasmine.createSpy('eventHandler')
+        router.addRoute('bar').any(spy)
+        
+        beforeEach ->
+            runs -> location.hash = ''
+            waits(250)
+            runs ->
+                router.start()
+                spy.reset()
+            
+        afterEach ->
+            $(window).off('hashchange')
+            $('body').off('submit', 'form')
+        
+        it 'makes the router stop listening to hash changes', ->
+            runs ->
+                router.stop()
+                location.hash = 'bar'
+            waits(250)
+            runs -> expect(spy).not.toHaveBeenCalled()
+        
+        it 'makes the router stop listening to form submissions', ->
+            $form = $('<form action="bar" method="post"></form>').appendTo('body')
+            $form.on('submit', ((e) -> do e.preventDefault))
+            
+            runs ->
+                router.stop()
+                $form.submit()
+            waits(250)
+            runs ->
+                expect(spy).not.toHaveBeenCalled()
+                $form.remove()
