@@ -184,6 +184,18 @@ describe 'Simrou', ->
             expect(router.resolve('/')).toBeTruthy()
         
     
+    describe 'createRoute()', ->
+        it 'returns a route instance from a string that is not bound to the router', ->
+            router = new Simrou()
+            route = router.createRoute('foo')
+            expect(router.resolve('foo')).toBeFalsy()
+        
+        it 'returns the identical route instance if one is passed as argument', ->
+            router = new Simrou()
+            route = router.addRoute('foo')
+            expect(router.createRoute(route)).toBe(route)
+        
+    
     describe 'navigate()', ->
         router = null
         spy = jasmine.createSpy('actionHandler')
@@ -237,4 +249,4 @@ describe 'Simrou', ->
             expect(router.resolve('foo')).toBeFalsy()
         
     
-# start() / stop()
+# To do: start() / stop()
