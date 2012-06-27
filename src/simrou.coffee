@@ -1,5 +1,5 @@
 ###*
-* @preserve Simrou v1.5.1 - Released under the MIT License.
+* @preserve Simrou v1.5.2 - Released under the MIT License.
 * Copyright (c) 2012 büro für ideen, www.buero-fuer-ideen.de
 ###
 
@@ -130,10 +130,9 @@ class Simrou
     # Registers event handlers for onHashChange and onSubmit events
     listen: ->
         unless @listening
-            jQuery =>
-                jQuery(window).on('hashchange.simrou', @resolveHash)
-                jQuery('body').on('submit.simrou', 'form', @handleFormSubmit)
-                @listening = true
+            jQuery(window).on('hashchange.simrou', @resolveHash)
+            jQuery => jQuery('body').on('submit.simrou', 'form', @handleFormSubmit)
+            @listening = true
     
     # Starts the routing process - binds the Simrou instance to several
     # events and navigates to the specified initial hash, if window.
