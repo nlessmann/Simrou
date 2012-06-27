@@ -1,5 +1,5 @@
 ###*
-* @preserve Simrou v1.5.0 - Released under the MIT License.
+* @preserve Simrou v1.5.1 - Released under the MIT License.
 * Copyright (c) 2012 büro für ideen, www.buero-fuer-ideen.de
 ###
 
@@ -18,30 +18,27 @@ class Simrou
         # Initialize class members
         @routes = {}
         
+        @listening = false
         @observeHash = false
         @observeForms = false
         
         # Create initial routes
         @addRoutes(initialRoutes) if initialRoutes?
     
-    # Allows to create a new route that is NOT attached to this router instance.
-    createRoute: (pattern, caseSensitive = true) ->
-        if pattern instanceof Route then pattern else new Route(pattern, caseSensitive)
-    
     # Allows to register a new route with this simrou instance.
     addRoute: (pattern, caseSensitive = true) ->
-        route = @createRoute(pattern, caseSensitive)
+        route = if pattern instanceof Route then pattern else new Route(pattern, caseSensitive)
         @routes[ route.toString() ] = route
     
     # Allows to bulk register routes.
     addRoutes: (routes, caseSensitive = true) ->
-        if $.isFunction(routes)
+        if jQuery.isFunction(routes)
             list = routes.call(@, caseSensitive)
-        else if $.isArray(routes)
+        else if jQuery.isArray(routes)
             list = []
             for route in routes
                 list.push( @addRoutes(route, caseSensitive) )
-        else if $.isPlainObject(routes)
+        else if jQuery.isPlainObject(routes)
             list = {}
             for own pattern, actions of routes
                 route = @addRoute(pattern, caseSensitive)
@@ -92,7 +89,7 @@ class Simrou
             args = [params, method]
             
             # Trigger wildcard event
-            $route = $(route)
+            $route = jQuery(route)
             $route.trigger('simrou:any', args)
             
             # If a method is specified, trigger the specific event
@@ -120,7 +117,7 @@ class Simrou
     # any form, if a matching route for the form's action is found.
     handleFormSubmit: (event) =>
         if @observeForms
-            $form = $(event.target)
+            $form = jQuery(event.target)
             
             method = $form.attr('method') or $form.get(0).getAttribute('method')
             action = @getHash( $form.attr('action') )
@@ -130,17 +127,22 @@ class Simrou
         
         true
     
+    # Registers event handlers for onHashChange and onSubmit events
+    listen: ->
+        unless @listening
+            jQuery =>
+                jQuery(window).on('hashchange.simrou', @resolveHash)
+                jQuery('body').on('submit.simrou', 'form', @handleFormSubmit)
+                @listening = true
+    
     # Starts the routing process - binds the Simrou instance to several
     # events and navigates to the specified initial hash, if window.
     # location.hash is empty.
     start: (initialHash, @observeHash = true, @observeForms = true) ->
-        # Register event handler for the onHashChange event
-        $(window).off('hashchange', @resolveHash).on('hashchange', @resolveHash)
+        # Required to listen to some events?
+        @listen() if @observeHash or @observeForms
         
-        # Listen to form submissions
-        $('body').off('submit', 'form', @handleFormSubmit).on('submit', 'form', @handleFormSubmit)
-        
-        # Resolve the current or (if none) the initial hash
+        # Resolve the current or (if none is set) the initial hash
         hash = @getHash()
         if hash isnt ''
             @resolve(hash, 'get')
@@ -196,7 +198,7 @@ class Route
     match: (hash) ->
         matches = @expr.exec(hash)
         
-        if $.isArray(matches)
+        if jQuery.isArray(matches)
             result = {}
             result[name] = matches[index + 1] for name, index in @params
         else
@@ -207,9 +209,9 @@ class Route
     # Assembles a concrete url out of this route.
     assemble: (values...) ->
         if values.length > 0
-            if $.isArray(values[0])
+            if jQuery.isArray(values[0])
                 values = values[0]
-            else if $.isPlainObject(values[0])
+            else if jQuery.isPlainObject(values[0])
                 # Sort values in the way the appear in @params
                 values = ((if name of values[0] then values[0][name] else '') for name in @params)
                 
@@ -219,7 +221,7 @@ class Route
             # Get the right replacement
             value = if values.length > 0 then values.shift() else ''
             
-            if $.isFunction(value)
+            if jQuery.isFunction(value)
                 value = value(@)
             
             # Replace (again) the first still present parameter
@@ -237,18 +239,18 @@ class Route
     # If only one argument is specified (a function), it is
     # registered as an action handler for all methods (*).
     attachAction: (action, method = 'any') ->
-        $(@).on('simrou:' + method.toLowerCase(), action)
+        jQuery(@).on('simrou:' + method.toLowerCase(), action)
     
     # Allows to bulk attach action handlers.
     attachActions: (actions, method = 'any') ->
         # Homogenize argument
-        unless $.isPlainObject(actions)
+        unless jQuery.isPlainObject(actions)
             [actions, tmp] = [{}, actions]
             actions[method] = tmp
         
         # Attach the actions
         for own method, list of actions
-            list = [list] unless $.isArray(list)
+            list = [list] unless jQuery.isArray(list)
             @attachAction(action, method) for action in list
     
     # Works just like attachAction, but instead detaches the action
@@ -260,10 +262,10 @@ class Route
         
         eventName = 'simrou:' + method.toLowerCase()
         
-        if $.isFunction(action)
-            $(@).off(eventName, action)
+        if jQuery.isFunction(action)
+            jQuery(@).off(eventName, action)
         else
-            $(@).off(eventName)
+            jQuery(@).off(eventName)
     
     shortcut = (method) ->
         (action) -> @attachAction(action, method)
@@ -276,4 +278,5 @@ class Route
     
 
 # Export Simrou to the global namespace
-window.Simrou = $.Simrou = Simrou
+Simrou.Route = Route
+window.Simrou = jQuery.Simrou = Simrou

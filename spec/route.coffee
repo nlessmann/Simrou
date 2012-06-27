@@ -6,6 +6,14 @@ describe 'Simrou.Route', ->
         router = new Simrou()
         spy.reset()
     
+    it 'is present', ->
+        expect(typeof Simrou.Route).toBe('function')
+    
+    it 'is a constructor', ->
+        route = new Simrou.Route('foo')
+        expect(typeof route).toBe('object')
+        expect(route instanceof Simrou.Route).toBeTruthy()
+    
     it 'provides shortcuts for attaching event handlers to common HTTP methods', ->
         route = router.addRoute('foo')
         shortcuts = ['any', 'get', 'post', 'put', 'delete']
