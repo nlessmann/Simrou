@@ -16,31 +16,29 @@ Demo
 ----
 
 ```javascript
-$(function() {
-    // Setup an instance of Simrou
-    var router = new Simrou();
-    
-    // Register a route that matches edit requests to any article
-    var editRoute = router.addRoute('/article/:id/edit');
-    
-    // Bind an action handler to that route
-    editRoute.get(function(event, params) {
-        showEditForm(params.id);
-    });
-    
-    // HTML Forms are getting watched, so you can even bind an
-    // action handler to POST/PUT/DELETE requests.
-    editRoute.post(saveChanges);
-    
-    // Start the engine!
-    router.start();
-    
-    // Navigate somewhere (updates location.hash and resolves the URL)
-    router.navigate('/article/42/edit');
-    
-    // ..or resolve without touching location.hash
-    router.resolve('/article/18/edit', 'POST');
+// Setup an instance of Simrou
+var router = new Simrou();
+
+// Register a route that matches edit requests to any article
+var editRoute = router.addRoute('/article/:id/edit');
+
+// Bind an action handler to that route
+editRoute.get(function(event, params) {
+    showEditForm(params.id);
 });
+
+// HTML Forms are getting watched, so you can even bind an
+// action handler to POST/PUT/DELETE requests.
+editRoute.post(saveChanges);
+
+// Start the engine!
+router.start();
+
+// Navigate somewhere (updates location.hash and resolves the URL)
+router.navigate('/article/42/edit');
+
+// ..or resolve without touching location.hash
+router.resolve('/article/18/edit', 'POST');
 ```
 
 Links work just as expected if you prepend them with a hash symbol:
@@ -64,21 +62,17 @@ Advanced usage
 You can add more than one route or action handler at a time:
 
 ```javascript
-$(function() {
-    var router = new Simrou({
-        '/article/:id/edit': {
-            get: [ actionHandler11, actionHandler12 ],
-            post: actionHandler2,
-            put: actionHandler3
-        },
-        '/downloads/*': {
-            get: actionHandler4
-        },
-        '/homepage': actionHandler5
-    });
-    
-    router.start('/homepage');   // Handing over a default route to navigate to
+var router = new Simrou({
+    '/article/:id/edit': {
+        get: [ actionHandler11, actionHandler12 ],
+        post: actionHandler2,
+        put: actionHandler3
+    },
+    '/downloads/*': { get: actionHandler4 },
+    '/homepage': actionHandler5
 });
+
+router.start('/homepage');   // Handing over a default route to navigate to
 ```
 
 
