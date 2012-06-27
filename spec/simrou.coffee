@@ -91,7 +91,7 @@ describe 'Simrou', ->
                 bar: ->
             
             expect($.isPlainObject(result)).toBeTruthy()
-            expect(typeof route).toBe('object') for pattern, route in result
+            expect(typeof route).toBe('object') for pattern, route of result
         
         it 'can attach case-insensitive routes from a plain object', ->
             routes =
