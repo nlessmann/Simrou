@@ -1,5 +1,5 @@
 ###*
-* @preserve Simrou v1.5.2 - Released under the MIT License.
+* @preserve Simrou v1.5.3 - Released under the MIT License.
 * Copyright (c) 2012 büro für ideen, www.buero-fuer-ideen.de
 ###
 
@@ -98,7 +98,7 @@ class Simrou
             
             return true
         
-        false
+        return false
     
     # Return the current value for window.location.hash without any
     # leading hash keys (does not remove leading slashes!).
@@ -125,7 +125,7 @@ class Simrou
             if @resolve(action, method)
                 event.preventDefault()
         
-        true
+        return true
     
     # Registers event handlers for onHashChange and onSubmit events
     listen: ->
@@ -188,7 +188,7 @@ class Route
         # with the proper regular expression
         pattern = pattern.replace(@RegExpCache.escapeRegExp, '\\$&')
         pattern = pattern.replace(@RegExpCache.namedParam, '([^\/]+)')
-        pattern = pattern.replace(@RegExpCache.splatParam, '(.*?)')
+        pattern = pattern.replace(@RegExpCache.splatParam, '(.+?)')
         
         flags = if caseSensitive then '' else 'i'
         @expr = new RegExp('^' + pattern + '$', flags)
@@ -239,6 +239,7 @@ class Route
     # registered as an action handler for all methods (*).
     attachAction: (action, method = 'any') ->
         jQuery(@).on('simrou:' + method.toLowerCase(), action)
+        return @
     
     # Allows to bulk attach action handlers.
     attachActions: (actions, method = 'any') ->
@@ -251,6 +252,8 @@ class Route
         for own method, list of actions
             list = [list] unless jQuery.isArray(list)
             @attachAction(action, method) for action in list
+        
+        return @
     
     # Works just like attachAction, but instead detaches the action
     # handler from the route.
@@ -265,6 +268,8 @@ class Route
             jQuery(@).off(eventName, action)
         else
             jQuery(@).off(eventName)
+        
+        return @
     
     shortcut = (method) ->
         (action) -> @attachAction(action, method)

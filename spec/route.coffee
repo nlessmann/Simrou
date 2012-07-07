@@ -53,6 +53,12 @@ describe 'Simrou.Route', ->
             router.resolve('foo', 'baz')
             expect(spy).toHaveBeenCalled()
         
+        it 'provides a fluent interface', ->
+            router = new Simrou()
+            route = router.addRoute('foo')
+            route2 = route.attachAction(->)
+            expect(route2).toBe(route)
+        
         # proper functioning in general has already been covered by Simrou.resolve()
         
     
@@ -97,6 +103,10 @@ describe 'Simrou.Route', ->
             router.resolve('foo', 'get')
             expect(spies[0]).toHaveBeenCalled()
         
+        it 'provides a fluent interface', ->
+            route2 = route.attachActions([->])
+            expect(route2).toBe(route)
+        
     
     describe 'detachAction()', ->
         router = null
@@ -124,6 +134,10 @@ describe 'Simrou.Route', ->
             route.detachAction('get')
             router.resolve('foo', 'get')
             expect(spy).not.toHaveBeenCalled() for spy in spies
+        
+        it 'provides a fluent interface', ->
+            route2 = route.detachAction(spies[0], 'get')
+            expect(route2).toBe(route)
         
     
     describe 'match()', ->
