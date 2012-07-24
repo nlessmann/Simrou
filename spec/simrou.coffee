@@ -14,6 +14,15 @@ describe 'Simrou', ->
         router = new Simrou()
         expect(router.eventSupported).toBeTruthy()
     
+    it 'is extendable by adding an intitialize() function to the prototype', ->
+        spy = jasmine.createSpy('fn')
+        class MyRouter extends Simrou
+            initialize: ->
+                spy()
+        
+        router = new MyRouter()
+        expect(spy).toHaveBeenCalled()
+    
 
     describe 'addRoute()', ->
         router = null
