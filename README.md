@@ -59,7 +59,7 @@ Advanced usage
 
 ### Create custom routers with CoffeeScript
 
-Simrou can easily be used as a substructure for your own routing classes that encapsulate the specific routing
+Simrou can easily be used as a basis for your own routing classes that encapsulates the specific routing
 logic for your application or for parts of it.
 
 ```coffeescript
