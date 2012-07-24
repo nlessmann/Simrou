@@ -71,7 +71,7 @@ class MyRouter extends Simrou
     getArticle: (event, params) ->
         Model.loadArticle params.id
     
-    postArticle (event, params) ->
+    postArticle: (event, params) ->
         # ...
 
 router = new MyRouter
