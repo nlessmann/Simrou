@@ -57,6 +57,28 @@ http://your-domain.tld/#/article/182/edit
 Advanced usage
 --------------
 
+### Create custom routers with CoffeeScript
+
+Simrou can easily be used as a substructure for your own routing classes that encapsulate the specific routing
+logic for your application or for parts of it.
+
+```coffeescript
+class MyRouter extends Simrou
+    initialize: ->
+        # Add some routes
+        @addRoute('/articles/:id').get(@getArticle).post(@postArticle)
+    
+    getArticle: (event, params) ->
+        Model.loadArticle params.id
+    
+    postArticle (event, params) ->
+        # ...
+
+router = new MyRouter
+router.start()
+```
+
+
 ### Bulk adding of routes
 
 You can add more than one route or action handler at a time:
