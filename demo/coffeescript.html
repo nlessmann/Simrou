@@ -13,28 +13,27 @@
         <![endif]-->
         
         <script type="text/coffeescript">
-        $ ->
-            # Create a new Simrou instance
-            router = new Simrou
+        class MyRouter extends Simrou
+            initialize: ->
+                # Add some routes
+                @addRoute('/articles/:id').get(@getArticle).put(@putArticle)
+                @addRoute('/homepage').any(@theHomepage)
+                
+                # Auto-start this router
+                @start '/homepage'
             
-            # Register a route
-            articlesRoute = router.addRoute '/articles/:id'
-            
-            # Attach an action handler for GET requests to this route
-            articlesRoute.get (event, params) ->
+            getArticle: (event, params) ->
                 alert 'Article ID: ' + params.id
             
-            # The same works for other HTTP methods, like PUT (makes sense for HTML forms)
-            articlesRoute.put (event, params) ->
+            putArticle: (event, params) ->
                 alert 'Article route (ID: ' + params.id + ') matched via HTTP method = PUT'
             
-            # Now lets register a route for the homepage
-            homepage = router.addRoute '/homepage'
-            homepage.any (event, params, method) ->
+            theHomepage: (event, params, method) ->
                 alert 'Homepage route matched via HTTP method = ' + method
-            
-            # Get the router running!
-            router.start '/homepage'
+        
+        $ ->
+            # Create a new router instance
+            router = new MyRouter()
             
             # And register a click event handler that uses navigate() to go to a URL
             $('#test').click ->
