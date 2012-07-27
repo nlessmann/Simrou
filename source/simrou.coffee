@@ -59,9 +59,10 @@ class Simrou
         delete @routes[name] if name of @routes
         
     # Changes window.location.hash to the specified hash.
-    navigate: (hash) ->
+    navigate: (hash, extra_args) ->
         previousHash = @getHash()
         location.hash = hash
+        @extra_args = extra_args
         
         if not @observeHash or location.hash is previousHash
             @resolve(hash, 'get')
@@ -88,6 +89,7 @@ class Simrou
             
             # Prepend the arguments array with the method
             args = [params, method]
+            args.push @extra_args if @extra_args?
             
             # Trigger wildcard event
             $route = jQuery(route)
