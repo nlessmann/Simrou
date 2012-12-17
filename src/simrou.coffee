@@ -67,7 +67,7 @@ class Simrou
             @resolve(hash, 'get')
         
     # Resolves a hash. Method is optional, returns true if matching route found.
-    resolve: (hash, method) ->
+    resolve: (hash, method, data) ->
         # Strip unwanted characters from the hash
         cleanHash = String(hash).replace(@RegExpCache.trimHash, '$1')
         if cleanHash is ''
@@ -85,9 +85,12 @@ class Simrou
             params = route.match(cleanHash)
             unless params
                 continue
-            
+
             # Prepend the arguments array with the method
-            args = [params, method]
+            if method in ['post', 'put']
+                args = [params, method, data]
+            else
+                args = [params, method]
             
             # Trigger wildcard event
             $route = jQuery(route)
