@@ -188,6 +188,41 @@ router.resolve('some/route', 'get'); // all three event handlers get notified!
 ```
 
 
+### Traveling, from route to route
+
+If you need to use specific callback from a defined route to another, you will need to add the travallers
+
+```javascript
+router.addTraveller({
+
+    // when navigate from #/ to #/user
+    '/, /user' : function() {
+        // it will trigger
+    }
+
+    // whitespace is ok
+    // you can now close a popup 
+    // if you navigate away @TODO (will add * for any route in the future)
+  , '/detail,   /list ' : closePopupHander
+})
+
+
+// multiple traveller can be added
+// becareful of override from new travellers with the same keys
+router.addTraveller({
+    '/account, /email' : function() {
+        // it will trigger
+    }
+});
+```
+
+
+!!! currently only works with one path, /path, 
+won't work with /path/path || /path&*
+
+@TODO accept path and params
+
+
 Requirements &amp; License
 --------------------------
 

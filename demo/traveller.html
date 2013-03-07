@@ -17,7 +17,10 @@
             route.addTraveller({
                 '/a, /b'        : function() { console.log('a - b') }
               , '/c,        /b' : function() { console.log('c - b') }
-              , '/b,/a'         : function() { console.log('b - a') }
+            });
+
+            route.addTraveller({
+                '/b,/a'         : function() { console.log('b - a') }
             });
             
             route.start();
