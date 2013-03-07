@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Simrou Demo - Overview</title>
+        
+        <script type="text/javascript" src="../lib/jquery-1.7.2.min.js"></script>
+        <script type="text/javascript" src="../build/simrou.js"></script>
+        
+        <!--[if lte IE 7]>
+        <script type="text/javascript" src="../lib/jquery.ba-hashchange.min.js"></script>
+        <![endif]-->
+        
+        <script type="text/javascript">
+            var route = new Simrou();
+            
+            route.addTraveller({
+                '/a, /b'        : function() { console.log('a - b') }
+              , '/c,        /b' : function() { console.log('c - b') }
+            });
+
+            route.addTraveller({
+                '/b,/a'         : function() { console.log('b - a') }
+            });
+            
+            route.start();
+        </script>
+    </head>
+    
+    <body>
+        
+        <a href="#/a">a</a>
+        <a href="#/b">b</a>
+        <a href="#/c">c</a>
+        
+    </body>
+</html>
