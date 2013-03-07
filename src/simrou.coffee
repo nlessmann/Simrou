@@ -6,8 +6,8 @@
 class Simrou
     # Cache regular expressions
     RegExpCache:
-        extractHash: /^[^#]*(#.*)$/
-        trimHash: /^#*(.*?)\/*$/
+        extractHash : /^[^#]*(#.*)$/
+        trimHash    : /^#*(.*?)\/*$/
     
     # Does the user's browser natively support the onHashChange event? 
     eventSupported: do ->
@@ -18,9 +18,13 @@ class Simrou
         # Initialize class members
         @routes = {}
         
-        @listening = false
-        @observeHash = false
+        @listening    = false
+        @observeHash  = false
         @observeForms = false
+
+        # Store hash histories
+        @history      = []
+        @travelLounge = {}
         
         # Create initial routes
         @addRoutes(initialRoutes) if initialRoutes?
@@ -65,6 +69,26 @@ class Simrou
         
         if not @observeHash or location.hash is previousHash
             @resolve(hash, 'get')
+
+    # Match from & to, handler
+    # @param {object} :key ['from', 'to], :value function(){}
+    addTraveller : (object) ->
+        for i of object
+            key = i.replace(/\ +?/g,'')
+            @travelLounge[key] = object[i]
+    
+    # Listen for history matching
+    # travel registeration
+    # @param {array} history eg: ['/1','/2/]
+    travelBegins : () ->
+        history = @history
+        history = history.toString()
+        lounge  = @travelLounge
+
+        lounge[history]() if history of lounge
+
+        # if ( new RegExp("\\b" + history + "\\b").test(lounge) )
+        #     console.log('cool')
         
     # Resolves a hash. Method is optional, returns true if matching route found.
     resolve: (hash, method) ->
@@ -100,6 +124,11 @@ class Simrou
             return true
         
         return false
+
+    # Saves history on hashChange
+    saveHistory : (hash) ->
+        @history.push hash.replace(/#/,'').toString()
+        @history.shift() if @history.length > 2
     
     # Return the current value for window.location.hash without any
     # leading hash keys (does not remove leading slashes!).
@@ -112,7 +141,9 @@ class Simrou
         if @observeHash
             url = event.originalEvent.newURL if @eventSupported
             hash = @getHash(url)
+            @saveHistory hash
             @resolve(hash, 'get')
+            @travelBegins()
     
     # Can be bound to forms (onSubmit). Suppresses the submission of
     # any form, if a matching route for the form's action is found.
@@ -145,8 +176,10 @@ class Simrou
         # Resolve the current or (if none is set) the initial hash
         hash = @getHash()
         if hash isnt ''
+            @saveHistory(hash)
             @resolve(hash, 'get')
         else if initialHash?
+            @saveHistory(initialHash)
             if window.history? and window.history.replaceState?
                 # Fixes a safari bug where the initial hash is not pushed to the history
                 # when altering location.hash while the page is still loading.
@@ -275,11 +308,11 @@ class Route
     shortcut = (method) ->
         (action) -> @attachAction(action, method)
     
-    get: shortcut('get')
-    post: shortcut('post')
-    put: shortcut('put')
-    delete: shortcut('delete')
-    any: shortcut('any')
+    get    : shortcut('get')
+    post   : shortcut('post')
+    put    : shortcut('put')
+    delete : shortcut('delete')
+    any    : shortcut('any')
     
 
 # Export Simrou to the global namespace
